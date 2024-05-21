@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "immersiveui",
+  "version": "${version}",
+  "name": "ImmersiveUI",
+  "description": "Makes your UI flashy :D",
+  "authors": [
+    "Octo-Studios"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "ARR",
+  "icon": "assets/immersiveui/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "it.hurts.octostudios.fabric.ImmersiveUIFabric"
+    ],
+    "client": [
+      "it.hurts.octostudios.fabric.client.ImmersiveUIFabricClient"
+    ]
+  },
+  "mixins": [
+    "immersiveui.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.20.1",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
