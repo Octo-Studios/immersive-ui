@@ -40,10 +40,16 @@ public class ParticleData {
         return startPos;
     }
 
+    public ParticleEmitter emitter() {
+        return emitter;
+    }
+
     private final float maxSpeed;
     private final int maxLifetime;
     private final Vector2f startPos;
     private Vector2f oldPos;
+
+    private final ParticleEmitter emitter;
 
     public Class<? extends Screen> getScreen() {
         return screen;
@@ -62,13 +68,14 @@ public class ParticleData {
 
     private int tickCount;
 
-    public ParticleData(@Nullable Class<? extends Screen> screen, ResourceLocation texture, float maxSpeed, int maxLifetime, float xStart, float yStart) {
+    public ParticleData(@Nullable Class<? extends Screen> screen, ResourceLocation texture, float maxSpeed, int maxLifetime, float xStart, float yStart, ParticleEmitter emitter) {
         this.screen = screen;
         this.texture = texture;
         this.maxSpeed = maxSpeed;
         this.maxLifetime = maxLifetime;
         this.lifetime = maxLifetime;
         this.speed = maxSpeed;
+        this.emitter = emitter;
         this.startPos = new Vector2f(xStart, yStart);
         this.position = startPos;
         this.oldPos = startPos;
@@ -80,10 +87,10 @@ public class ParticleData {
     }
 
     public void tick() {
+        this.oldPos = new Vector2f(position);
+
         if (angularVelocity != 0) this.direction = VectorUtils.rotate(this.direction.normalize(), angularVelocity);
         else this.direction.normalize();
-
-        this.oldPos = position;
 
         this.speed = Mth.clamp(this.speed*(1-friction), 0, maxSpeed);
         this.lifetime = Mth.clamp(this.lifetime - 1, 0, maxLifetime);
@@ -94,7 +101,7 @@ public class ParticleData {
         tickCount += 1;
     }
 
-    public void render(Screen screen, GuiGraphics guiGraphics, float partialTick) {
+    public void render(PoseStack pose, float partialTick) {
         Minecraft MC = Minecraft.getInstance();
 
         float lifePercentage = (float) lifetime / maxLifetime;
@@ -110,10 +117,10 @@ public class ParticleData {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0,0,232);
-        RenderUtils.renderTextureFromCenter(guiGraphics.pose(), position.x, position.y, 8, 8, size * lifePercentage);
-        guiGraphics.pose().popPose();
+        RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), 8, 8, size * lifePercentage);
+
+        //System.out.println(oldPos == position);
+        //guiGraphics.blit(getTexture(), (int) position.x, (int) position.y, 8, 8, 0, 0, 8, 8, 8, 8);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 

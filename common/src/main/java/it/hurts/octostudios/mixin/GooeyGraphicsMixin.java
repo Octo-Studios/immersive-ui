@@ -1,22 +1,20 @@
 package it.hurts.octostudios.mixin;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.octostudios.system.particles.ParticleStorage;
-import it.hurts.octostudios.system.particles.data.GenericParticleData;
+import it.hurts.octostudios.system.particles.data.ParticleEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Random;
 
 import static it.hurts.octostudios.client.TickManager.*;
 
@@ -30,27 +28,33 @@ public abstract class GooeyGraphicsMixin {
     @Final
     private Minecraft minecraft;
 
+    @Shadow @Final private PoseStack pose;
+
+    @Shadow public abstract PoseStack pose();
+
     @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At("TAIL"))
     public void renderParticles(LivingEntity entity, Level level, ItemStack stack, int x, int y, int seed, int guiOffset, CallbackInfo ci) {
-        if (stack.hasFoil()) {
-            if (minecraft.isPaused()) return;
-            if (elapsedTime >= TARGET_INTERVAL_MS * 2) {
-                Random random = new Random();
+        if (stack.hasFoil()) ParticleStorage.EMITTERS.add(new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y)));
 
-                GenericParticleData particle = new GenericParticleData(
-                        minecraft.screen,
-                        0xFFFF0000,
-                        random.nextFloat(2f, 3f),
-                        x + 8 + random.nextFloat(-4, 4),
-                        y + 8 + random.nextFloat(-4, 4),
-                        random.nextFloat(0.8f, 1.2f),
-                        random.nextInt(30, 60)
-                );
-                particle.direction = new Vector2f(random.nextFloat(-1, 1), random.nextFloat(-1, 1));
-                particle.angularVelocity = random.nextFloat(-20, 20);
-                particle.friction = random.nextFloat(0.05f,0.2f);
-                ParticleStorage.addParticle(particle);
-            }
-        }
+//        if (stack.hasFoil()) {
+//            if (minecraft.isPaused()) return;
+//            if (elapsedTime >= TARGET_INTERVAL_MS) {
+//                Random random = new Random();
+//
+//                GenericParticleData particle = new GenericParticleData(
+//                        minecraft.screen,
+//                        0xFFFF0000,
+//                        random.nextFloat(2f, 3f),
+//                        x + 8 + random.nextFloat(-4, 4),
+//                        y + 8 + random.nextFloat(-4, 4),
+//                        random.nextFloat(0.8f, 1.2f),
+//                        random.nextInt(30, 60)
+//                );
+//                particle.direction = new Vector2f(random.nextFloat(-1, 1), random.nextFloat(-1, 1));
+//                particle.angularVelocity = random.nextFloat(-20, 20);
+//                particle.friction = random.nextFloat(0.05f,0.2f);
+//                ParticleStorage.addParticle(particle);
+//            }
+//        }
     }
 }

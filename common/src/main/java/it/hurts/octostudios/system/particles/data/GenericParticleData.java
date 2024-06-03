@@ -1,6 +1,7 @@
 package it.hurts.octostudios.system.particles.data;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.octostudios.ImmersiveUI;
 import it.hurts.octostudios.util.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -15,8 +16,8 @@ import org.lwjgl.opengl.GL11;
 public class GenericParticleData extends ParticleData {
     private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveUI.MOD_ID, "textures/gui/test.png");
 
-    public GenericParticleData(Screen screen, int color, float speed, float xStart, float yStart, float size, int lifeTime) {
-        super(screen == null ? null : screen.getClass(), TEXTURE, speed, lifeTime, xStart, yStart);
+    public GenericParticleData(Screen screen, int color, float speed, float xStart, float yStart, float size, int lifeTime, ParticleEmitter emitter) {
+        super(screen == null ? null : screen.getClass(), TEXTURE, speed, lifeTime, xStart, yStart, emitter);
         this.color = color;
         this.size = size;
     }
@@ -28,7 +29,7 @@ public class GenericParticleData extends ParticleData {
     }
 
     @Override
-    public void render(Screen screen, GuiGraphics guiGraphics, float partialTick) {
-        super.render(screen, guiGraphics, partialTick);
+    public void render(PoseStack poseStack, float partialTick) {
+        super.render(poseStack, partialTick);
     }
 }

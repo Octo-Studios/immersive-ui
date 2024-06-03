@@ -1,6 +1,5 @@
 package it.hurts.octostudios.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -53,7 +52,7 @@ public class FloatingItemMixin {
 
         guiGraphics.pose().pushPose();
         //guiGraphics.pose().mulPose(Axis.XP.rotation(xRot));
-        guiGraphics.pose().translate(i + 8, j + 4, 232.0f);
+        guiGraphics.pose().translate(i+8, j+4, 232.0f);
         guiGraphics.pose().mulPose(Axis.ZP.rotation(currentAngle));
         guiGraphics.renderItem(itemStack, -8, 0);
         Font font = Minecraft.getInstance().font;
