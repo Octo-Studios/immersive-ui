@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ParticleStorage {
     //public static final HashMap<Vector2i, ItemStack> RENDERED_ITEMS = new HashMap<>();
-    public static final Set<ParticleEmitter> EMITTERS = new HashSet<>();
+    //public static final Set<ParticleEmitter> EMITTERS = new HashSet<>();
     private static final List<ParticleData> PARTICLES = new ArrayList<>();
 
     public static List<ParticleData> getParticlesData() {

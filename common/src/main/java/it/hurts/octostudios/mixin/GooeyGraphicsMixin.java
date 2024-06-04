@@ -2,6 +2,7 @@ package it.hurts.octostudios.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.octostudios.system.particles.ParticleStorage;
+import it.hurts.octostudios.system.particles.data.ParticleData;
 import it.hurts.octostudios.system.particles.data.ParticleEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,27 +35,6 @@ public abstract class GooeyGraphicsMixin {
 
     @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At("TAIL"))
     public void renderParticles(LivingEntity entity, Level level, ItemStack stack, int x, int y, int seed, int guiOffset, CallbackInfo ci) {
-        if (stack.hasFoil()) ParticleStorage.EMITTERS.add(new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y)));
-
-//        if (stack.hasFoil()) {
-//            if (minecraft.isPaused()) return;
-//            if (elapsedTime >= TARGET_INTERVAL_MS) {
-//                Random random = new Random();
-//
-//                GenericParticleData particle = new GenericParticleData(
-//                        minecraft.screen,
-//                        0xFFFF0000,
-//                        random.nextFloat(2f, 3f),
-//                        x + 8 + random.nextFloat(-4, 4),
-//                        y + 8 + random.nextFloat(-4, 4),
-//                        random.nextFloat(0.8f, 1.2f),
-//                        random.nextInt(30, 60)
-//                );
-//                particle.direction = new Vector2f(random.nextFloat(-1, 1), random.nextFloat(-1, 1));
-//                particle.angularVelocity = random.nextFloat(-20, 20);
-//                particle.friction = random.nextFloat(0.05f,0.2f);
-//                ParticleStorage.addParticle(particle);
-//            }
-//        }
+        //if (stack.hasFoil()) ParticleStorage.EMITTERS.add(new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y)));
     }
 }

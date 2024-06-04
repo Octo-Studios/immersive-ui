@@ -51,7 +51,7 @@ public class ParticleData {
 
     private final ParticleEmitter emitter;
 
-    public Class<? extends Screen> getScreen() {
+    public @Nullable Class<? extends Screen> getScreen() {
         return screen;
     }
 
@@ -65,6 +65,9 @@ public class ParticleData {
     public float angularVelocity;
     public int lifetime;
     public int color;
+
+
+    public boolean isBeingRendered;
 
     private int tickCount;
 
@@ -84,6 +87,12 @@ public class ParticleData {
         this.color = 0xFFFFFFFF;
         this.direction = new Vector2f(0,1);
         this.angularVelocity = 0f;
+    }
+
+    public PoseStack getPoseStackSnapshot() {
+        PoseStack stack = new PoseStack();
+        stack.mulPoseMatrix(emitter.pose());
+        return stack;
     }
 
     public void tick() {
