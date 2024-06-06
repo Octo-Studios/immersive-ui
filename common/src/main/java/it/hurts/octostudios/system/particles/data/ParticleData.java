@@ -51,12 +51,6 @@ public class ParticleData {
 
     private final ParticleEmitter emitter;
 
-    public @Nullable Class<? extends Screen> getScreen() {
-        return screen;
-    }
-
-    private final @Nullable Class<? extends Screen> screen;
-
     public Vector2f position;
     public Vector2f direction;
     public float speed;
@@ -66,13 +60,9 @@ public class ParticleData {
     public int lifetime;
     public int color;
 
-
-    public boolean isBeingRendered;
-
     private int tickCount;
 
-    public ParticleData(@Nullable Class<? extends Screen> screen, ResourceLocation texture, float maxSpeed, int maxLifetime, float xStart, float yStart, ParticleEmitter emitter) {
-        this.screen = screen;
+    public ParticleData(ResourceLocation texture, float maxSpeed, int maxLifetime, float xStart, float yStart, ParticleEmitter emitter) {
         this.texture = texture;
         this.maxSpeed = maxSpeed;
         this.maxLifetime = maxLifetime;
@@ -110,7 +100,7 @@ public class ParticleData {
         tickCount += 1;
     }
 
-    public void render(PoseStack pose, float partialTick) {
+    public void render(PoseStack pose, GuiGraphics guiGraphics, float partialTick) {
         Minecraft MC = Minecraft.getInstance();
 
         float lifePercentage = (float) lifetime / maxLifetime;
@@ -127,7 +117,7 @@ public class ParticleData {
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
         RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), 8, 8, size * lifePercentage);
-
+        guiGraphics.drawString(Minecraft.getInstance().font, String.valueOf(getPoseStackSnapshot().last().pose().getRowColumn(2,3)), (int) position.x-4, (int) position.y-8, 0xFFFFFF, true);
         //System.out.println(oldPos == position);
         //guiGraphics.blit(getTexture(), (int) position.x, (int) position.y, 8, 8, 0, 0, 8, 8, 8, 8);
 

@@ -16,8 +16,8 @@ import org.lwjgl.opengl.GL11;
 public class GenericParticleData extends ParticleData {
     private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveUI.MOD_ID, "textures/gui/test.png");
 
-    public GenericParticleData(Screen screen, int color, float speed, float xStart, float yStart, float size, int lifeTime, ParticleEmitter emitter) {
-        super(screen == null ? null : screen.getClass(), TEXTURE, speed, lifeTime, xStart, yStart, emitter);
+    public GenericParticleData(int color, float speed, float xStart, float yStart, float size, int lifeTime, ParticleEmitter emitter) {
+        super(TEXTURE, speed, lifeTime, xStart, yStart, emitter);
         this.color = color;
         this.size = size;
     }
@@ -29,7 +29,7 @@ public class GenericParticleData extends ParticleData {
     }
 
     @Override
-    public void render(PoseStack poseStack, float partialTick) {
-        super.render(poseStack, partialTick);
+    public void render(PoseStack poseStack, GuiGraphics guiGraphics, float partialTick) {
+        super.render(poseStack, guiGraphics, partialTick);
     }
 }

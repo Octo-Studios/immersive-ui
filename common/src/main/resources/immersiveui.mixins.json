@@ -6,8 +6,7 @@
   "client": [
     "FloatingItemMixin",
     "GooeyGraphicsMixin",
-    "GooeyMixin",
-    "ScreenMixin"
+    "GooeyMixin"
   ],
   "mixins": [
   ],
