@@ -38,13 +38,11 @@ public abstract class GooeyGraphicsMixin {
 
     @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At("TAIL"))
     public void renderParticles(LivingEntity entity, Level level, ItemStack stack, int x, int y, int seed, int guiOffset, CallbackInfo ci) {
-        pose().pushPose();
-        pose().translate(0, 0, 100);
         if (!stack.hasFoil()) return;
         ParticleEmitter emitter = new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y));
         if (!ParticleStorage.EMITTERS.containsKey(emitter)) ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
 
-        if (!minecraft.isPaused() && elapsedTime >= TARGET_INTERVAL_MS*20f) {
+        if (!minecraft.isPaused() && elapsedTime >= TARGET_INTERVAL_MS) {
             ParticleData particle = new GenericParticleData(
                     0xFF8800FF,
                     random.nextFloat(0.3f,0.8f),
@@ -61,9 +59,8 @@ public abstract class GooeyGraphicsMixin {
             ParticleStorage.addParticle(emitter, particle);
         }
 
-        for (ParticleData data : ParticleStorage.EMITTERS.get(emitter)) {
-            data.render(data.getPoseStackSnapshot(), (GuiGraphics) (Object) this, minecraft.isPaused() ? 0 : minecraft.getFrameTime());
-        }
-        pose().popPose();
+//        for (ParticleData data : ParticleStorage.EMITTERS.get(emitter)) {
+//            data.render(data.getPoseStackSnapshot(), (GuiGraphics) (Object) this, minecraft.isPaused() ? 0 : minecraft.getFrameTime());
+//        }
     }
 }

@@ -54,9 +54,12 @@ public class GooeyMixin {
     public void ä(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
         currentTime = System.currentTimeMillis();
         elapsedTime = currentTime - TickManager.lastExecutedTime;
-        if (elapsedTime >= TARGET_INTERVAL_MS*20f) {
+        if (elapsedTime >= TARGET_INTERVAL_MS) {
             lastExecutedTime = currentTime;
         }
 
+        for (ParticleData data : ParticleStorage.getParticlesData().stream().filter(data -> data.getPoseStackSnapshot().last().pose().getRowColumn(2,3) <= 50).toList()) {
+            data.render(data.getPoseStackSnapshot(), guiGraphics, partialTick);
+        }
     }
 }
