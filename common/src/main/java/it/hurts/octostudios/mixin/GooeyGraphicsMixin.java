@@ -25,8 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static it.hurts.octostudios.client.VariableStorage.TARGET_INTERVAL_MS;
-import static it.hurts.octostudios.client.VariableStorage.elapsedTime;
+import static it.hurts.octostudios.client.VariableStorage.*;
 
 @Mixin(GuiGraphics.class)
 public abstract class GooeyGraphicsMixin {
