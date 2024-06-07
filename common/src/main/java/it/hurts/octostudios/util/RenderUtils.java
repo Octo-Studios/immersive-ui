@@ -43,4 +43,33 @@ public class RenderUtils {
 
         BufferUploader.drawWithShader(builder.end());
     }
+
+    public static int lerpColor(int colorStart, int colorEnd, float t) {
+        // Ensure t is between 0.0 and 1.0
+        if (t < 0.0f) t = 0.0f;
+        if (t > 1.0f) t = 1.0f;
+
+        // Extract ARGB components from the start color
+        int aStart = (colorStart >> 24) & 0xFF;
+        int rStart = (colorStart >> 16) & 0xFF;
+        int gStart = (colorStart >> 8) & 0xFF;
+        int bStart = colorStart & 0xFF;
+
+        // Extract ARGB components from the end color
+        int aEnd = (colorEnd >> 24) & 0xFF;
+        int rEnd = (colorEnd >> 16) & 0xFF;
+        int gEnd = (colorEnd >> 8) & 0xFF;
+        int bEnd = colorEnd & 0xFF;
+
+        // Linearly interpolate each component
+        int a = (int)(aStart + t * (aEnd - aStart));
+        int r = (int)(rStart + t * (rEnd - rStart));
+        int g = (int)(gStart + t * (gEnd - gStart));
+        int b = (int)(bStart + t * (bEnd - bStart));
+
+        // Combine the components back into an ARGB color
+        int color = (a << 24) | (r << 16) | (g << 8) | b;
+
+        return color;
+    }
 }

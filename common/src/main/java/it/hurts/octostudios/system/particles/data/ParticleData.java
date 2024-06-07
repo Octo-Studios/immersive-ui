@@ -1,21 +1,15 @@
 package it.hurts.octostudios.system.particles.data;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.octostudios.util.RenderUtils;
 import it.hurts.octostudios.util.VectorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Random;
 
 public class ParticleData {
     public ResourceLocation getTexture() {
@@ -58,7 +52,8 @@ public class ParticleData {
     public float size;
     public float angularVelocity;
     public int lifetime;
-    public int color;
+    public int startColor;
+    public int endColor;
 
     private int tickCount;
 
@@ -74,7 +69,8 @@ public class ParticleData {
         this.oldPos = startPos;
         this.size = 1f;
         this.friction = 0f;
-        this.color = 0xFFFFFFFF;
+        this.startColor = 0xFFFFFFFF;
+        this.endColor = 0;
         this.direction = new Vector2f(0,1);
         this.angularVelocity = 0f;
     }
@@ -105,12 +101,14 @@ public class ParticleData {
 
         float lifePercentage = (float) lifetime / maxLifetime;
 
+        int color = RenderUtils.lerpColor(startColor, endColor, 1-lifePercentage);
+
         int alpha = (color >> 24) & 0xFF;
         int red = (color >> 16) & 0xFF;
         int green = (color >> 8) & 0xFF;
         int blue = color & 0xFF;
 
-        RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, lifePercentage);
+        RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255f);
         RenderSystem.setShaderTexture(0, getTexture());
 
         RenderSystem.enableBlend();

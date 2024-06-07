@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "it.hurts.octostudios.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "FloatingItemMixin",
+    "GooeyMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
