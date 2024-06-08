@@ -29,16 +29,16 @@ public class GooeyMixin {
     @Inject(method = "render", at = @At("TAIL"))
     public void ä(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
         CommonCode.gooeyRenderCode(guiGraphics, partialTick);
-
-        guiGraphics.drawString(Minecraft.getInstance().font, "EMITTERS.size(): "+ParticleStorage.EMITTERS.size(), 1, 1, 0xFFFFFF, true);
-        guiGraphics.drawString(Minecraft.getInstance().font, "getParticlesData().size(): "+ParticleStorage.getParticlesData().size(), 1, 11, 0xFFFFFF, true);
-
-        if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isShiftKeyDown()) return;
-        int l = 31;
-        for (Map.Entry<ParticleEmitter, List<ParticleData>> entry : ParticleStorage.EMITTERS.entrySet().stream().limit(10).toList()) {
-            guiGraphics.drawString(Minecraft.getInstance().font, "emitter + list: "+entry.getKey()+" | "+entry.getValue().size(), 1, l, 0xffffff, true);
-            l+=10;
-        }
+//
+//        guiGraphics.drawString(Minecraft.getInstance().font, "EMITTERS.size(): "+ParticleStorage.EMITTERS.size(), 1, 1, 0xFFFFFF, true);
+//        guiGraphics.drawString(Minecraft.getInstance().font, "getParticlesData().size(): "+ParticleStorage.getParticlesData().size(), 1, 11, 0xFFFFFF, true);
+//
+//        //if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isShiftKeyDown()) return;
+//        int l = 31;
+//        for (Map.Entry<ParticleEmitter, List<ParticleData>> entry : ParticleStorage.EMITTERS.entrySet().stream().limit(10).toList()) {
+//            guiGraphics.drawString(Minecraft.getInstance().font, "emitter + list: "+entry.getKey()+" | "+entry.getValue().size(), 1, l, 0xffffff, true);
+//            l+=10;
+//        }
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))

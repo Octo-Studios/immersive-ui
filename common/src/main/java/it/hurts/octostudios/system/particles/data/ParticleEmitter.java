@@ -7,11 +7,11 @@ import java.util.Objects;
 
 public class ParticleEmitter {
     public Matrix4f pose() {
-        return pose;
+        return new Matrix4f(pose);
     }
 
     public Vector2i position() {
-        return position;
+        return new Vector2i(position);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ParticleEmitter {
     private final Vector2i position;
 
     public ParticleEmitter(Matrix4f pose, Vector2i position) {
-        this.pose = pose;
-        this.position = position;
+        this.pose = new Matrix4f(pose);
+        this.position = new Vector2i(position);
     }
 }

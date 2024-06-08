@@ -6,7 +6,7 @@ import it.hurts.octostudios.system.particles.data.ParticleEmitter;
 import java.util.*;
 
 public class ParticleStorage {
-    public static final Map<ParticleEmitter, List<ParticleData>> EMITTERS = new HashMap<>();
+    public static final HashMap<ParticleEmitter, List<ParticleData>> EMITTERS = new HashMap<>();
 
     public static List<ParticleData> getParticlesData() {
         return EMITTERS.values().stream().flatMap(List::stream).toList();

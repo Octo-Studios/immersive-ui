@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static it.hurts.octostudios.client.VariableStorage.*;
@@ -39,10 +41,13 @@ public abstract class GooeyGraphicsMixin {
     @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At("HEAD"))
     public void renderParticles(LivingEntity entity, Level level, @NotNull ItemStack stack, int x, int y, int seed, int guiOffset, CallbackInfo ci) {
         if (!stack.hasFoil()) return;
-        ParticleEmitter emitter = new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y));
-        if (!ParticleStorage.EMITTERS.containsKey(emitter)) ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
-
         if (!minecraft.isPaused() && elapsedTime >= TARGET_INTERVAL_MS) {
+            ParticleEmitter emitter = new ParticleEmitter(this.pose().last().pose(), new Vector2i(x,y));
+
+            if (!ParticleStorage.EMITTERS.containsKey(emitter)) {
+                ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
+            }
+
             ParticleData particle = new GenericParticleData(
                     0xFFFF00FF,
                     0x000088FF,
