@@ -6,11 +6,10 @@
     "version": "${version}",
     "metadata": {
       "name": "ImmersiveUI",
-      "description": "This is an example description! Tell everyone what your mod is about!",
+      "description": "Makes your UI flashy :D",
       "contributors": {
-        "Me!": "Author"
-      },
-      "icon": "assets/immersiveui/icon.png"
+        "Me!": "Octo-Studios"
+      }
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
