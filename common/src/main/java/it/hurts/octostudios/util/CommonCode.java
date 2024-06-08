@@ -8,15 +8,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import static it.hurts.octostudios.client.VariableStorage.*;
 
 public class CommonCode {
-    public static void gooeyRenderCode(GuiGraphics guiGraphics, float partialTick) {
+    public static void gooeyRenderCode(float partialTick) {
         currentTime = System.currentTimeMillis();
         elapsedTime = currentTime - VariableStorage.lastExecutedTime;
         if (elapsedTime >= TARGET_INTERVAL_MS) {
             lastExecutedTime = currentTime;
         }
 
-        for (ParticleData data : ParticleStorage.getParticlesData().stream().filter(data -> data.getPoseStackSnapshot().last().pose().getRowColumn(2,3) <= SCREEN_ZORDER).toList()) {
-            data.render(data.getPoseStackSnapshot(), guiGraphics, partialTick);
-        }
+//        for (ParticleData data : ParticleStorage.getParticlesData().stream().filter(data -> data.getPoseStackSnapshot().last().pose().getRowColumn(2,3) <= SCREEN_ZORDER).toList()) {
+//            data.render(data.getPoseStackSnapshot(), partialTick);
+//        }
     }
 }

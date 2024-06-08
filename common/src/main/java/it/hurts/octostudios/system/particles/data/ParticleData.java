@@ -96,7 +96,7 @@ public class ParticleData {
         tickCount += 1;
     }
 
-    public void render(PoseStack pose, GuiGraphics guiGraphics, float partialTick) {
+    public void render(PoseStack pose, float partialTick) {
         Minecraft MC = Minecraft.getInstance();
 
         float lifePercentage = (float) lifetime / maxLifetime;

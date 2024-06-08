@@ -14,15 +14,4 @@ public class GenericParticleData extends ParticleData {
         this.endColor = endColor;
         this.size = size;
     }
-
-
-    @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
-    public void render(PoseStack poseStack, GuiGraphics guiGraphics, float partialTick) {
-        super.render(poseStack, guiGraphics, partialTick);
-    }
 }

@@ -1,5 +1,6 @@
 package it.hurts.octostudios.mixin;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import it.hurts.octostudios.system.particles.ParticleStorage;
 import it.hurts.octostudios.system.particles.data.GenericParticleData;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -44,8 +46,13 @@ public abstract class FloatingItemMixin {
     @Shadow
     @Nullable
     protected Slot hoveredSlot;
+    @Shadow private ItemStack draggingItem;
     @Unique
     private float immersiveui$ticker;
+    @Unique
+    float deltaX = 0f;
+    @Unique
+    float deltaY = 0f;
     @Unique
     private int oX = Integer.MIN_VALUE; // Initially not set
     @Unique
@@ -73,13 +80,8 @@ public abstract class FloatingItemMixin {
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
         float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
-        float deltaX = 0f;
-        float deltaY = 0f;
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
-            deltaX = (oX - i) / deltaTime / 20f;
-            deltaY = (oY - j) / deltaTime / 20f;
-
             xRotTarget = Mth.clamp(deltaY / 8f, -Mth.HALF_PI, Mth.HALF_PI);
             targetAngle = Mth.clamp(-deltaX / 8f, -Mth.HALF_PI, Mth.HALF_PI);
 
@@ -98,24 +100,24 @@ public abstract class FloatingItemMixin {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(i + 8, j + 4, 232.0f);
-        guiGraphics.pose().scale(1.5f, 1.5f, 1f);
+        guiGraphics.pose().scale(1.4f, 1.4f, 1f);
         guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
         guiGraphics.renderItem(itemStack, -8, 0);
-        if (itemStack.hasFoil()) {
+        if (itemStack.getRarity() != Rarity.COMMON) {
             ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, 0));
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
                 ParticleData particle = new GenericParticleData(
-                        0xFFFF00FF,
-                        0x000088FF,
-                        0.8f,
-                        emitter.position().x + 8,
-                        emitter.position().y + 10,
-                        random.nextFloat(0.8f, 1.5f),
-                        random.nextInt(7, 15),
+                        itemStack.getRarity().color.getColor() != null?itemStack.getRarity().color.getColor()+0xff000000:0xffff00ff,
+                        0x0,
+                        Mth.abs(deltaY)+Mth.abs(deltaX),
+                        0 + random.nextFloat(-1,1),
+                        8 + random.nextFloat(-1,1),
+                        random.nextFloat(0.8f, 1.25f),
+                        random.nextInt(12, 30),
                         emitter
                 );
-                particle.direction = VectorUtils.rotate(new Vector2f(0, -1), random.nextInt(0, 360));
+                particle.direction = new Vector2f(-deltaX, -deltaY).normalize();
                 ParticleStorage.addParticle(
                         emitter,
                         particle
@@ -127,9 +129,6 @@ public abstract class FloatingItemMixin {
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popPose();
 
-        oX = i;
-        oY = j;
-
         ci.cancel();
     }
 
@@ -140,7 +139,7 @@ public abstract class FloatingItemMixin {
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
-        float progress = Easing.lerp(1, 1.5f, Easing.animate(hovering ? Easing.Type.EASE_OUT : Easing.Type.EASE_IN, expandingProgress.get(slot)));
+        float progress = Easing.lerp(1, 1.4f, Easing.animate(hovering ? Easing.Type.EASE_OUT : Easing.Type.EASE_IN, expandingProgress.get(slot)));
         //if (!hovering) return;
         guiGraphics.pose().translate(slot.x + 8, slot.y + 8, 0);
         guiGraphics.pose().scale(progress, progress, 1f);
@@ -157,5 +156,17 @@ public abstract class FloatingItemMixin {
         if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
             this.hoveredSlot = slot;
         }
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
+        deltaX = (oX - mouseX) / deltaTime / 20f;
+        deltaY = (oY - mouseY) / deltaTime / 20f;
+    }
+
+    @Inject(method = "render", at = @At("TAIL"))
+    public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        oX = mouseX; oY = mouseY;
     }
 }
