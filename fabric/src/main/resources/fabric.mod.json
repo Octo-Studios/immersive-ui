@@ -8,11 +8,10 @@
     "Octo-Studios"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://octo-studios.com/",
+    "sources": "https://github.com/Octo-Studios/immersive-ui"
   },
   "license": "ARR",
-  "icon": "assets/immersiveui/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/Octo-Studios/immersive-ui"
 license = "ARR"
 
 [[mods]]
@@ -11,7 +11,6 @@ authors = "Octo-Studios"
 description = '''
 Makes your UI flashy :D
 '''
-#logoFile = ""
 
 [[dependencies.immersiveui]]
 modId = "forge"
@@ -26,10 +25,3 @@ mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
-
-#[[dependencies.immersiveui]]
-#modId = "architectury"
-#mandatory = true
-#versionRange = "[9.2.14,)"
-#ordering = "AFTER"
-#side = "BOTH"
