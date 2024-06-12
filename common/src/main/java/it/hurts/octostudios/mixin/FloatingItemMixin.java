@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -134,7 +135,14 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE))
     public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        boolean hovering = hoveredSlot == slot && (Minecraft.getInstance().player != null && Minecraft.getInstance().player.inventoryMenu.getCarried().isEmpty());
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (player == null)
+            return;
+
+        ItemStack carried = player.inventoryMenu.getCarried();
+
+        boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameTags(slot.getItem(), carried));
         float deltaTime = Minecraft.getInstance().getDeltaFrameTime() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
