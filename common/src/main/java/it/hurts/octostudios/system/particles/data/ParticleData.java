@@ -77,7 +77,7 @@ public class ParticleData {
 
     public PoseStack getPoseStackSnapshot() {
         PoseStack stack = new PoseStack();
-        stack.mulPoseMatrix(emitter.pose());
+        stack.mulPose(emitter.pose());
         return stack;
     }
 

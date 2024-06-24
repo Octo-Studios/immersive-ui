@@ -80,7 +80,7 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
+        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
             xRotTarget = Mth.clamp(deltaY / 8f, -Mth.HALF_PI, Mth.HALF_PI);
@@ -109,7 +109,7 @@ public abstract class FloatingItemMixin {
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
                 ParticleData particle = new GenericParticleData(
-                        itemStack.getRarity().color.getColor() != null?itemStack.getRarity().color.getColor()+0xff000000:0xffff00ff,
+                        itemStack.getRarity().color().getColor() != null?itemStack.getRarity().color().getColor()+0xff000000:0xffff00ff,
                         0x0,
                         Mth.abs(deltaY)+Mth.abs(deltaX),
                         0 + random.nextFloat(-1,1),
@@ -142,8 +142,8 @@ public abstract class FloatingItemMixin {
 
         ItemStack carried = player.inventoryMenu.getCarried();
 
-        boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameTags(slot.getItem(), carried));
-        float deltaTime = Minecraft.getInstance().getDeltaFrameTime() / 4f;
+        boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
+        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
@@ -168,7 +168,7 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
+        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
         deltaX = (oX - mouseX) / deltaTime / 20f;
         deltaY = (oY - mouseY) / deltaTime / 20f;
     }

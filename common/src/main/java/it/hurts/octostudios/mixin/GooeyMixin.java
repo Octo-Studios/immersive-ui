@@ -5,6 +5,7 @@ import it.hurts.octostudios.system.particles.ParticleStorage;
 import it.hurts.octostudios.system.particles.data.ParticleData;
 import it.hurts.octostudios.system.particles.data.ParticleEmitter;
 import it.hurts.octostudios.util.CommonCode;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,8 +28,8 @@ public class GooeyMixin {
     Random random = new Random();
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void ä(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
-        CommonCode.gooeyRenderCode(partialTick);
+    public void ä(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        CommonCode.gooeyRenderCode(deltaTracker.getGameTimeDeltaPartialTick(true));
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))

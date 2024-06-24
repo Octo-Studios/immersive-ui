@@ -15,7 +15,7 @@ public class ScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
     public void renderParticlesIfTheScreenIsPresentAndTheZOrderIsHighEnough(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         for (ParticleData data : ParticleStorage.getParticlesData()) {
-            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getFrameTime());
+            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
         }
     }
 

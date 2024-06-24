@@ -13,11 +13,9 @@ public class RenderUtils {
     }
 
     public static void renderTextureFromCenter(PoseStack matrix, float centerX, float centerY, float texOffX, float texOffY, float texWidth, float texHeight, float width, float height, float scale) {
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         matrix.pushPose();
 
@@ -34,14 +32,14 @@ public class RenderUtils {
         float w2 = width / 2F;
         float h2 = height / 2F;
 
-        builder.vertex(m, -w2, +h2, 0).uv(u1, v2).endVertex();
-        builder.vertex(m, +w2, +h2, 0).uv(u2, v2).endVertex();
-        builder.vertex(m, +w2, -h2, 0).uv(u2, v1).endVertex();
-        builder.vertex(m, -w2, -h2, 0).uv(u1, v1).endVertex();
+        builder.addVertex(m, -w2, +h2, 0).setUv(u1, v2);
+        builder.addVertex(m, +w2, +h2, 0).setUv(u2, v2);
+        builder.addVertex(m, +w2, -h2, 0).setUv(u2, v1);
+        builder.addVertex(m, -w2, -h2, 0).setUv(u1, v1);
 
         matrix.popPose();
 
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.drawWithShader(builder.buildOrThrow());
     }
 
     public static int lerpColor(int colorStart, int colorEnd, float t) {

@@ -42,18 +42,21 @@ dependencies {
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     //modImplementation "dev.architectury:architectury-forge:$rootProject.architectury_api_version"
 
-    modImplementation("curse.maven:jade-324717:5390389")
-    modImplementation("curse.maven:jei-238222:5101366")
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
-processResources {
-    inputs.property 'version', project.version
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        mod_id     : mod_id, mod_name: mod_name,
+        mod_version: mod_version, mod_authors: mod_authors
+]
 
-    filesMatching('META-INF/mods.toml') {
-        expand version: project.version
+processResources {
+    inputs.properties replaceProperties
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
     }
 }
 
