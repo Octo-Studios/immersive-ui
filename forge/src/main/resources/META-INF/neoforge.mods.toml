@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/Octo-Studios/immersive-ui"
+license = "ARR"
+
+[[mixins]]
+config = "${mod_id}-common.mixins.json"
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
+[[mods]]
+modId = "immersiveui"
+version = "${version}"
+displayName = "ImmersiveUI"
+authors = "Octo-Studios"
+description = '''
+Makes your UI flashy :D
+'''
+
+[[dependencies.immersiveui]]
+modId = "forge"
+mandatory = true
+versionRange = "[1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.immersiveui]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21,)"
+ordering = "NONE"
+side = "BOTH"
