@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -29,10 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class FloatingItemMixin {
@@ -140,7 +138,7 @@ public abstract class FloatingItemMixin {
         if (player == null)
             return;
 
-        ItemStack carried = player.inventoryMenu.getCarried();
+        ItemStack carried = player.containerMenu.getCarried();
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
         float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() / 4f;
@@ -149,6 +147,13 @@ public abstract class FloatingItemMixin {
 
         float progress = Easing.lerp(1, 1.4f, Easing.animate(hovering ? Easing.Type.EASE_OUT : Easing.Type.EASE_IN, expandingProgress.get(slot)));
         //if (!hovering) return;
+
+        if (hoveredSlot == slot) guiGraphics.fillGradient(RenderType.guiOverlay(), slot.x, slot.y, slot.x + 16, slot.y + 16, -2130706433, -2130706433, 0);
+
+        if (!carried.isEmpty() && ItemStack.isSameItemSameComponents(slot.getItem(), carried)) {
+            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*0.8f, Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*0.8f, 0);
+        }
+
         guiGraphics.pose().translate(slot.x + 8, slot.y + 8, 0);
         guiGraphics.pose().scale(progress, progress, 1f);
         guiGraphics.pose().translate(-slot.x - 8, -slot.y - 8, 0);
