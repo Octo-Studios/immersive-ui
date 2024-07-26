@@ -4,6 +4,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,9 +52,9 @@ public abstract class InGameHudMixin {
         double toMove = Math.abs(selectedSlot - position) / 2f * client.getTimer().getRealtimeDeltaTicks() * speed;
 
         if (position > selectedSlot) {
-            position -= toMove;
+            position = Mth.clamp(position - toMove, selectedSlot, position);
         } else if (position < selectedSlot) {
-            position += toMove;
+            position = Mth.clamp(position + toMove, position, selectedSlot);
         }
 
         if (Math.abs(position - selectedSlot) < 0.05d) position = selectedSlot;

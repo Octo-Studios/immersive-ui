@@ -98,12 +98,12 @@ public abstract class FloatingItemMixin {
         xRotVelocity *= (float) Math.pow(inertiaDamping, deltaTime);
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(i + 8, j + 4, 232.0f);
+        guiGraphics.pose().translate(i + 8, j + 8, 232.0f);
         guiGraphics.pose().scale(1.4f, 1.4f, 1f);
         guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
-        guiGraphics.renderItem(itemStack, -8, 0);
+        guiGraphics.renderItem(itemStack, -8, -8);
         if (itemStack.getRarity() != Rarity.COMMON) {
-            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, 0));
+            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
                 ParticleData particle = new GenericParticleData(
@@ -124,7 +124,7 @@ public abstract class FloatingItemMixin {
             }
         }
         Font font = Minecraft.getInstance().font;
-        guiGraphics.renderItemDecorations(font, itemStack, -8, 0, string);
+        guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popPose();
 
