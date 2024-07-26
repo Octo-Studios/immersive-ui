@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -29,10 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class FloatingItemMixin {
@@ -100,12 +98,12 @@ public abstract class FloatingItemMixin {
         xRotVelocity *= (float) Math.pow(inertiaDamping, deltaTime);
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(i + 8, j + 4, 232.0f);
+        guiGraphics.pose().translate(i + 8, j + 8, 232.0f);
         guiGraphics.pose().scale(1.4f, 1.4f, 1f);
         guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
-        guiGraphics.renderItem(itemStack, -8, 0);
+        guiGraphics.renderItem(itemStack, -8, -8);
         if (itemStack.getRarity() != Rarity.COMMON) {
-            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, 0));
+            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
                 ParticleData particle = new GenericParticleData(
@@ -126,7 +124,7 @@ public abstract class FloatingItemMixin {
             }
         }
         Font font = Minecraft.getInstance().font;
-        guiGraphics.renderItemDecorations(font, itemStack, -8, 0, string);
+        guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popPose();
 
@@ -140,14 +138,21 @@ public abstract class FloatingItemMixin {
         if (player == null)
             return;
 
-        ItemStack carried = player.inventoryMenu.getCarried();
+        ItemStack carried = player.containerMenu.getCarried();
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameTags(slot.getItem(), carried));
         float deltaTime = Minecraft.getInstance().getDeltaFrameTime() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
+        if (hoveredSlot == slot) guiGraphics.fillGradient(RenderType.guiOverlay(), slot.x, slot.y, slot.x + 16, slot.y + 16, -2130706433, -2130706433, 0);
+
         float progress = Easing.lerp(1, 1.4f, Easing.animate(hovering ? Easing.Type.EASE_OUT : Easing.Type.EASE_IN, expandingProgress.get(slot)));
+
+        if (!carried.isEmpty() && ItemStack.isSameItemSameTags(slot.getItem(), carried)) {
+            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*0.8f, Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*0.8f, 0);
+        }
+
         //if (!hovering) return;
         guiGraphics.pose().translate(slot.x + 8, slot.y + 8, 0);
         guiGraphics.pose().scale(progress, progress, 1f);
