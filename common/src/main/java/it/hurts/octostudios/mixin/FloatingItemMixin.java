@@ -34,9 +34,6 @@ import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class FloatingItemMixin {
-    @Shadow
-    protected abstract boolean isHovering(Slot slot, double mouseX, double mouseY);
-
     @Unique
     Random random = new Random();
     @Unique
@@ -46,6 +43,9 @@ public abstract class FloatingItemMixin {
     @Nullable
     protected Slot hoveredSlot;
     @Shadow private ItemStack draggingItem;
+
+    @Shadow protected abstract boolean isHovering(Slot slot, double d, double e);
+
     @Unique
     private float immersiveui$ticker;
     @Unique
@@ -111,7 +111,7 @@ public abstract class FloatingItemMixin {
                         0x0,
                         Mth.abs(deltaY)+Mth.abs(deltaX),
                         0 + random.nextFloat(-1,1),
-                        8 + random.nextFloat(-1,1),
+                        0 + random.nextFloat(-1,1),
                         random.nextFloat(0.8f, 1.25f),
                         random.nextInt(12, 30),
                         emitter

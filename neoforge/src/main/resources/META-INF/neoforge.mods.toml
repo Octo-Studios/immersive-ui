@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
 issueTrackerURL = "https://github.com/Octo-Studios/immersive-ui"
-license = "ARR"
+license = "All Rights Reserved"
 
 [[mixins]]
 config = "${mod_id}-common.mixins.json"

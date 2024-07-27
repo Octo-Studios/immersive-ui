@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "immersiveui",
-  "version": "${version}",
-  "name": "ImmersiveUI",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
   "description": "Makes your UI flashy :D",
   "authors": [
-    "Octo-Studios"
+    "${mod_authors}"
   ],
   "contact": {
     "homepage": "https://octo-studios.com/",
     "sources": "https://github.com/Octo-Studios/immersive-ui"
   },
-  "license": "ARR",
+  "license": "All Rights Reserved",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -29,8 +29,5 @@
     "fabric": "*",
     "minecraft": "~1.21",
     "java": ">=21"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
