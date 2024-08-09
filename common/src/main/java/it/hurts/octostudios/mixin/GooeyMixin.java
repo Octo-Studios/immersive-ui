@@ -1,6 +1,5 @@
 package it.hurts.octostudios.mixin;
 
-import it.hurts.octostudios.client.VariableStorage;
 import it.hurts.octostudios.system.particles.ParticleStorage;
 import it.hurts.octostudios.system.particles.data.ParticleData;
 import it.hurts.octostudios.system.particles.data.ParticleEmitter;
@@ -27,12 +26,12 @@ public class GooeyMixin {
     Random random = new Random();
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void ä(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
+    public void renderCode(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
         CommonCode.gooeyRenderCode(partialTick);
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))
-    public void ö(CallbackInfo ci) {
+    public void tickCode(CallbackInfo ci) {
         shouldTick = true;
         Set<ParticleEmitter> toRemoveSet = new HashSet<>();
 

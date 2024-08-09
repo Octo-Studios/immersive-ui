@@ -15,7 +15,7 @@ public abstract class GooeyMixin {
     @Shadow public abstract Minecraft getMinecraft();
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void ää(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
+    public void renderCode(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
         CommonCode.gooeyRenderCode(getMinecraft().getFrameTime());
     }
 }

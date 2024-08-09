@@ -29,12 +29,12 @@ public abstract class InGameHudMixin {
     private double position = 0.0;
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V", ordinal = 1), method = "renderHotbar")
-    private void boo(float partialTick, GuiGraphics guiGraphics, CallbackInfo ci) {
+    private void translatePose(float partialTick, GuiGraphics guiGraphics, CallbackInfo ci) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0,0,400);
     }
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderHotbar")
-    private void boo2(float partialTick, GuiGraphics guiGraphics, CallbackInfo ci) {
+    private void popPose(float partialTick, GuiGraphics guiGraphics, CallbackInfo ci) {
         guiGraphics.pose().popPose();
     }
 

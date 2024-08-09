@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractContainerScreen.class)
 public class FloatingItemMixin {
     @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "HEAD"), cancellable = true, remap = false)
-    private static void vpizdu(GuiGraphics arg, int i, int j, int k, int color, @NotNull CallbackInfo ci) {
+    private static void disableSlotHighlight(GuiGraphics arg, int i, int j, int k, int color, @NotNull CallbackInfo ci) {
         ci.cancel();
     }
 }
