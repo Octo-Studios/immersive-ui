@@ -28,12 +28,12 @@ public class GooeyMixin {
     Random random = new Random();
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void ä(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    public void renderCode(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         CommonCode.gooeyRenderCode(deltaTracker.getGameTimeDeltaPartialTick(true));
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))
-    public void ö(CallbackInfo ci) {
+    public void tickCode(CallbackInfo ci) {
         shouldTick = true;
         Set<ParticleEmitter> toRemoveSet = new HashSet<>();
 

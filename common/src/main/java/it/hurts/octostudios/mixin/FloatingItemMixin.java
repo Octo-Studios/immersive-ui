@@ -1,13 +1,11 @@
 package it.hurts.octostudios.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import it.hurts.octostudios.system.particles.ParticleStorage;
 import it.hurts.octostudios.system.particles.data.GenericParticleData;
 import it.hurts.octostudios.system.particles.data.ParticleData;
 import it.hurts.octostudios.system.particles.data.ParticleEmitter;
 import it.hurts.octostudios.util.Easing;
-import it.hurts.octostudios.util.VectorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -160,12 +158,12 @@ public abstract class FloatingItemMixin {
     }
 
     @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
-    private static void vpizdu(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
+    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
         ci.cancel();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void ebalRot(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, int i, int j, int k, Slot slot) {
+    public void fixHovering(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, int i, int j, int k, Slot slot) {
         if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
             this.hoveredSlot = slot;
         }

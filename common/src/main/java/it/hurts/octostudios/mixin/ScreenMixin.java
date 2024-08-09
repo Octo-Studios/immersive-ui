@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public class ScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
-    public void renderParticlesIfTheScreenIsPresentAndTheZOrderIsHighEnough(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         for (ParticleData data : ParticleStorage.getParticlesData()) {
             data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
         }
