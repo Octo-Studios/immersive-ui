@@ -1,32 +1,30 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
-issueTrackerURL = "https://github.com/Octo-Studios/immersive-ui"
-license = "All Rights Reserved"
-
-[[mixins]]
-config = "${mod_id}-common.mixins.json"
-[[mixins]]
-config = "${mod_id}.mixins.json"
+loaderVersion = "[4,)"
+issueTrackerURL = "${mod_tracker}"
+license = "${mod_license}"
 
 [[mods]]
 modId = "${mod_id}"
 version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
-description = '''
-Makes your UI flashy :D
-'''
+description = "${mod_description}"
+
+[[mixins]]
+config = "${mod_id}-common.mixins.json"
+[[mixins]]
+config = "${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
 modId = "neoforge"
-type="required"
-versionRange = "[21.0.6-beta,)"
+type = "required"
+versionRange = "[21.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "minecraft"
-type="required"
-versionRange = "[1.21, 1.22)"
+type = "required"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"

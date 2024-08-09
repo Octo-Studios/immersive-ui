@@ -1,44 +1,61 @@
 plugins {
-    id "architectury-plugin" version "3.4.155"
-    id "dev.architectury.loom" version "1.7.405" apply false
+    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
 
 architectury {
-    minecraft = rootProject.minecraft_version
-}
-
-subprojects {
-    apply plugin: "dev.architectury.loom"
-
-    loom {
-        silentMojangMappingsLicense()
-    }
-
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-
-        mappings loom.layered() {
-            officialMojangMappings()
-        }
-    }
+    minecraft = project.minecraft_version
 }
 
 allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
+    group = rootProject.mod_group
+    version = rootProject.mod_version
+}
 
-    archivesBaseName = rootProject.mod_id
-    version = rootProject.minecraft_version + "-" + rootProject.mod_version
-    group = rootProject.maven_group
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
 
-    repositories {
-
+    base {
+        archivesName = "$rootProject.mod_name" + "-" + "$project.name".toUpperCase()
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 21
+    repositories {
+        maven {
+            name = "OctoStudios"
+            url = uri("https://maven.octo-studios.com/releases")
+        }
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+
+        loom {
+            silentMojangMappingsLicense()
+        }
+
+        mappings loom.officialMojangMappings()
+
+        compileOnly 'org.projectlombok:lombok:1.18.32'
+        annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.32'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+        implementation 'org.jetbrains:annotations:20.1.0'
+    }
+
+    java {
+        withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
     }
 
     tasks.register('collectJars', Copy) {
@@ -57,5 +74,26 @@ allprojects {
 
     assemble {
         dependsOn(collectJars)
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "octo"
+                url = "https://maven.octo-studios.com/releases"
+                credentials(PasswordCredentials)
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+        publications {
+            maven(MavenPublication) {
+                groupId = group
+                artifactId = project.mod_id + "-" + project.name
+                version = version + "+" + project.minecraft_version
+                from components.java
+            }
+        }
     }
 }

@@ -1,11 +1,11 @@
 architectury {
-    common rootProject.enabled_platforms.split(",")
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/immersiveui.accesswidener")
+    common rootProject.enabled_platforms.split(',')
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+
+    modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
+
+    implementation "it.hurts.octostudios.octolib:octolib-common:$rootProject.octolib_version"
 }

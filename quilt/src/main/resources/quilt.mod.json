@@ -1,20 +1,17 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "${mod_id}",
+    "group": "${mod_group}",
     "id": "${mod_id}",
     "version": "${mod_version}",
     "metadata": {
-      "name": "${mod_name}",
-      "authors": [
-        "${mod_authors}"
-      ],
-      "description": "Makes your UI flashy :D"
+      "name": "${mod_id}",
+      "description": "${mod_description}"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
       "init": [
-        "it.hurts.octostudios.quilt.ImmersiveUIQuilt"
+        "it.hurts.octostudios.${mod_id}.quilt.ImmersiveUIQuilt"
       ]
     },
     "depends": [
@@ -28,12 +25,12 @@
       },
       {
         "id": "minecraft",
-        "version": "*"
+        "version": ">=1.21"
       }
+    ],
+    "mixin": [
+      "immersiveui.mixins.json",
+      "immersiveui-common.mixins.json"
     ]
-  },
-  "mixin": [
-    "immersiveui.mixins.json",
-    "immersiveui-common.mixins.json"
-  ]
+  }
 }

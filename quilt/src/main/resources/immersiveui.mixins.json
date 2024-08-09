@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "it.hurts.octostudios.quilt.mixin",
+  "package": "it.hurts.octostudios.immersiveui.quilt.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [

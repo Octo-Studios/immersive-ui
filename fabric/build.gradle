@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'com.github.johnrengelman.shadow'
 }
 
 architectury {
@@ -7,30 +7,39 @@ architectury {
     fabric()
 }
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
 configurations {
-    common
-    shadowCommon
-    compileOnly.extendsFrom common
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+
+    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+
+    modImplementation "it.hurts.octostudios.octolib:octolib-fabric:$rootProject.octolib_version"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
 
 def resourceTargets = ['fabric.mod.json']
 def replaceProperties = [
-        mod_id     : mod_id, mod_name: mod_name,
-        mod_version: mod_version, mod_authors: mod_authors
+        mod_version: mod_version, mod_group: mod_group, mod_name: mod_name,
+        mod_id     : mod_id, mod_description: mod_description, mod_authors: mod_authors,
+        mod_license: mod_license, mod_tracker: mod_tracker
 ]
 
 processResources {
@@ -42,26 +51,10 @@ processResources {
 }
 
 shadowJar {
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-
-    archiveClassifier = "dev-" + loom.platform.get().name()
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
 }
 
 remapJar {
-    injectAccessWidener = true
     input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveClassifier = loom.platform.get().name()
-}
-
-jar {
-    archiveClassifier = "dev"
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
 }

@@ -3,31 +3,30 @@
   "id": "${mod_id}",
   "version": "${mod_version}",
   "name": "${mod_name}",
-  "description": "Makes your UI flashy :D",
+  "description": "${mod_description}",
   "authors": [
     "${mod_authors}"
   ],
-  "contact": {
-    "homepage": "https://octo-studios.com/",
-    "sources": "https://github.com/Octo-Studios/immersive-ui"
-  },
-  "license": "All Rights Reserved",
+  "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "it.hurts.octostudios.fabric.ImmersiveUIFabric"
+      "${mod_group}.fabric.ImmersiveUIFabric"
     ],
     "client": [
-      "it.hurts.octostudios.fabric.client.ImmersiveUIFabricClient"
+      "${mod_group}.fabric.client.ImmersiveUIFabricClient"
     ]
   },
   "mixins": [
-    "immersiveui-common.mixins.json"
+    "${mod_id}-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "fabric": "*",
+    "fabricloader": ">=0.16.0",
     "minecraft": "~1.21",
-    "java": ">=21"
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
   }
 }
