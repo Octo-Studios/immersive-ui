@@ -7,6 +7,7 @@
   "authors": [
     "${mod_authors}"
   ],
+  "icon": "icon.png",
   "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
@@ -21,7 +22,6 @@
     "${mod_id}-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.0",
     "minecraft": "~1.21",
     "java": ">=21",
     "fabric-api": "*"

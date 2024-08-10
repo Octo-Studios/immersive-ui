@@ -9,6 +9,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = "${mod_description}"
+logoFile = "logo.png"
 
 [[mixins]]
 config = "${mod_id}-common.mixins.json"

@@ -8,7 +8,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod(ImmersiveUI.MOD_ID)
-@EventBusSubscriber
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public final class ImmersiveUINeoForge {
     public ImmersiveUINeoForge() {
 //        // Submit our event bus to let Architectury API register our content on the right time.
