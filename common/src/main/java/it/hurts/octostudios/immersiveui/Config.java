@@ -17,6 +17,9 @@ public class Config { //implements OctoConfig {
     //@Prop(comment = "Enables particles for rare items.")
     private boolean enableRarityParticles = true;
 
+    //@Prop(comment = "Enables vanilla slot highlighting")
+    private boolean enableVanillaSlotHighlighting = true;
+
     //@Prop(comment = "Affects the speed of the hotbar selector.")
     private double hotbarSelectorSpeed = 3d;
 
