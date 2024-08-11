@@ -69,7 +69,7 @@ public abstract class FloatingItemMixin {
     @Inject(method = "render", at = @At("TAIL"))
     public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         for (ParticleData data : ParticleStorage.getParticlesData()) {
-            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().isPaused()?0:Minecraft.getInstance().getFrameTime());
         }
     }
 
@@ -77,7 +77,7 @@ public abstract class FloatingItemMixin {
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
         float scale = ImmersiveUI.CONFIG.getHoveredItemScale();
 
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
@@ -105,7 +105,7 @@ public abstract class FloatingItemMixin {
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
                 ParticleData particle = new GenericParticleData(
-                        itemStack.getRarity().color().getColor() != null?itemStack.getRarity().color().getColor()+0xff000000:0xffff00ff,
+                        itemStack.getRarity().color.getColor() != null?itemStack.getRarity().color.getColor()+0xff000000:0xffff00ff,
                         0x0,
                         Mth.abs(deltaY)+Mth.abs(deltaX),
                         0 + random.nextFloat(-1,1),
@@ -148,7 +148,7 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaFrameTime();
         deltaX = (oX - mouseX) / deltaTime / 20f;
         deltaY = (oY - mouseY) / deltaTime / 20f;
     }

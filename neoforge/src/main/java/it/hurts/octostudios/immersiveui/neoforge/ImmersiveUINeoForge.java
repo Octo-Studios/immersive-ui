@@ -1,4 +1,4 @@
-package it.hurts.octostudios.immersiveui.neoforge;
+package it.hurts.octostudios.immersiveui.forge;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.octolib.modules.config.ConfigManager;

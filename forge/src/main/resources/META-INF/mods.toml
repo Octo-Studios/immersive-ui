@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+issueTrackerURL = "${mod_tracker}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "immersiveui"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = "${mod_description}"
+logoFile = "logo.png"
+
+[[mixins]]
+config = "immersiveui-common.mixins.json"
+[[mixins]]
+config = "immersiveui.mixins.json"
+
+[[dependencies.immersiveui]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.immersiveui]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"

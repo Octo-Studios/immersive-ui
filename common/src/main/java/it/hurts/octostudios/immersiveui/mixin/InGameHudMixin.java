@@ -1,7 +1,6 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,8 +20,6 @@ public abstract class InGameHudMixin {
     @Shadow
     protected abstract Player getCameraPlayer();
 
-    @Shadow public abstract void resetTitleTimes();
-
     @Unique
     int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 
@@ -32,17 +29,17 @@ public abstract class InGameHudMixin {
     @Unique
     private double position = 0.0;
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), method = "renderItemHotbar")
-    private void translatePose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V", ordinal = 1), method = "renderHotbar")
+    private void translatePose(float f, GuiGraphics guiGraphics, CallbackInfo ci) {
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0,0, ImmersiveUI.CONFIG.isRenderHotbarSelectorAboveItems()?400:0);
+        guiGraphics.pose().translate(0,0, ImmersiveUI.CONFIG.isRenderHotbarSelectorAboveItems()?1000:0);
     }
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderItemHotbar")
-    private void popPose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderHotbar")
+    private void popPose(float f, GuiGraphics guiGraphics, CallbackInfo ci) {
         guiGraphics.pose().popPose();
     }
 
-    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), index = 1, method = "renderItemHotbar")
+    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V", ordinal = 1), index = 1, method = "renderHotbar")
     private int selectedSlotPositionX(int originalX) {
         if (!ImmersiveUI.CONFIG.isEnableHotbarSelectorAnimation()) return originalX;
 
@@ -54,7 +51,7 @@ public abstract class InGameHudMixin {
         assert playerEntity != null;
         int selectedSlot = playerEntity.getInventory().selected;
 
-        double toMove = Math.abs(selectedSlot - position) / 2f * client.getTimer().getRealtimeDeltaTicks() * speed;
+        double toMove = Math.abs(selectedSlot - position) / 2f * client.getDeltaFrameTime() * speed;
 
         if (position > selectedSlot) {
             position = Mth.clamp(position - toMove, selectedSlot, position);

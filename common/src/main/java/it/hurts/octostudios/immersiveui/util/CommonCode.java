@@ -36,8 +36,8 @@ public class CommonCode {
 
         ItemStack carried = player.containerMenu.getCarried();
 
-        boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() / 4f;
+        boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameTags(slot.getItem(), carried));
+        float deltaTime = Minecraft.getInstance().getDeltaFrameTime() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
@@ -46,7 +46,7 @@ public class CommonCode {
 
         if (hoveredSlot == slot) guiGraphics.fillGradient(RenderType.guiOverlay(), slot.x, slot.y, slot.x + 16, slot.y + 16, -2130706433, -2130706433, 0);
 
-        if (!carried.isEmpty() && ItemStack.isSameItemSameComponents(slot.getItem(), carried) && ImmersiveUI.CONFIG.isEnableMatchingItemHovering()) {
+        if (!carried.isEmpty() && ItemStack.isSameItemSameTags(slot.getItem(), carried) && ImmersiveUI.CONFIG.isEnableMatchingItemHovering()) {
             guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), 0);
         }
 
