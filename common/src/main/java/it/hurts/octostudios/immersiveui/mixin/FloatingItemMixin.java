@@ -81,7 +81,7 @@ public abstract class FloatingItemMixin {
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
-            targetAngle = Mth.clamp(-deltaX / 8f * amplitude, -Mth.HALF_PI, Mth.HALF_PI);
+            targetAngle = Mth.clamp(-deltaX / 8f * amplitude, -Mth.HALF_PI/(2/amplitude), Mth.HALF_PI/(2/amplitude));
 
             // Update velocities based on change in target positions
             currentAngleVelocity += (targetAngle - currentAngle) * easingSpeed * deltaTime;
