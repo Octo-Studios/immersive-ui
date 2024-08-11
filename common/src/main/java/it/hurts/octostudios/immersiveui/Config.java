@@ -14,6 +14,9 @@ public class Config implements OctoConfig {
 
     @Prop(comment = "Enables hovering of matching items.")
     private boolean enableMatchingItemHovering = true;
+
+    @Prop(comment = "Enables vanilla slot highlighting")
+    private boolean enableVanillaSlotHighlighting = true;
     
     @Prop(comment = "Enables particles for rare items.")
     private boolean enableRarityParticles = true;
