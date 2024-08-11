@@ -21,6 +21,8 @@ public abstract class InGameHudMixin {
     @Shadow
     protected abstract Player getCameraPlayer();
 
+    @Shadow public abstract void resetTitleTimes();
+
     @Unique
     int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 
@@ -33,7 +35,7 @@ public abstract class InGameHudMixin {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), method = "renderItemHotbar")
     private void translatePose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0,0,400);
+        guiGraphics.pose().translate(0,0, ImmersiveUI.CONFIG.isRenderHotbarSelectorAboveItems()?400:0);
     }
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderItemHotbar")
     private void popPose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
@@ -42,6 +44,8 @@ public abstract class InGameHudMixin {
 
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), index = 1, method = "renderItemHotbar")
     private int selectedSlotPositionX(int originalX) {
+        if (!ImmersiveUI.CONFIG.isEnableHotbarSelectorAnimation()) return originalX;
+
         double speed = ImmersiveUI.CONFIG.getHotbarSelectorSpeed();
 
         int i = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2;

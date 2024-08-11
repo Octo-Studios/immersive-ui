@@ -59,14 +59,7 @@ public abstract class FloatingItemMixin {
     private float targetAngle = 0.0f;
 
     @Unique
-    private float xRot = 0.0f;
-    @Unique
-    private float xRotTarget = 0.0f;
-
-    @Unique
     private float currentAngleVelocity = 0.0f;
-    @Unique
-    private float xRotVelocity = 0.0f;
 
     @Unique
     private float easingSpeed = ImmersiveUI.CONFIG.getFloatingItemEasingSpeed();; // Speed of easing to target angle
@@ -82,31 +75,32 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
+        float scale = ImmersiveUI.CONFIG.getHoveredItemScale();
+
         float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
-            xRotTarget = Mth.clamp(deltaY / 8f * ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude(), -Mth.HALF_PI, Mth.HALF_PI);
-            targetAngle = Mth.clamp(-deltaX / 8f * ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude(), -Mth.HALF_PI, Mth.HALF_PI);
+            targetAngle = Mth.clamp(-deltaX / 8f * amplitude, -Mth.HALF_PI, Mth.HALF_PI);
 
             // Update velocities based on change in target positions
             currentAngleVelocity += (targetAngle - currentAngle) * easingSpeed * deltaTime;
-            xRotVelocity += (xRotTarget - xRot) * easingSpeed * deltaTime;
         }
 
+        //currentAngleVelocity = Mth.clamp(currentAngleVelocity,-0.5f,0.5f);
+
         // Apply velocities to current angles
-        currentAngle += currentAngleVelocity * deltaTime;
-        xRot += xRotVelocity * deltaTime;
+        currentAngle = Mth.clamp(currentAngle + currentAngleVelocity * deltaTime, -Mth.HALF_PI/(2/amplitude), Mth.HALF_PI/(2/amplitude));
 
         // Apply damping to velocities
-        currentAngleVelocity *= (float) Math.pow(inertiaDamping, deltaTime);
-        xRotVelocity *= (float) Math.pow(inertiaDamping, deltaTime);
+        currentAngleVelocity = currentAngleVelocity * (float) Math.pow(inertiaDamping, deltaTime);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(i + 8, j + 8, 232.0f);
-        guiGraphics.pose().scale(1.4f, 1.4f, 1f);
-        guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
+        guiGraphics.pose().scale(scale, scale, 1f);
+        if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
         guiGraphics.renderItem(itemStack, -8, -8);
-        if (itemStack.getRarity() != Rarity.COMMON) {
+        if (itemStack.getRarity() != Rarity.COMMON && ImmersiveUI.CONFIG.isEnableRarityParticles()) {
             ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
             if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
                 ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
