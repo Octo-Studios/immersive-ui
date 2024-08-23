@@ -37,5 +37,5 @@ public class Config implements OctoConfig {
     private float floatingItemRotationAmplitude = 1f;
 
     @Prop(comment = "Moves the hotbar selector above the items. You might want to disable this, if you use resource packs that change the default selector texture.")
-    private boolean renderHotbarSelectorAboveItems = true;
+    private boolean renderHotbarSelectorAboveItems = false;
 }
