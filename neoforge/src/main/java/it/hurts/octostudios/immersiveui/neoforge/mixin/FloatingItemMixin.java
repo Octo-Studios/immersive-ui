@@ -1,7 +1,9 @@
 package it.hurts.octostudios.immersiveui.neoforge.mixin;
 
+import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
 import it.hurts.octostudios.immersiveui.util.Easing;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -38,6 +40,11 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "HEAD"), cancellable = true)
     private static void disableSlotHighlight(GuiGraphics arg, int i, int j, int k, int color, CallbackInfo ci) {
+        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
+            ci.cancel();
+            return;
+        }
+        arg.fillGradient(RenderType.gui(), i, j, i + 16, j + 16, color, color, k);
         ci.cancel();
     }
 }

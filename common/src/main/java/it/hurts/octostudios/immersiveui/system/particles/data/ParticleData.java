@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.octostudios.immersiveui.util.RenderUtils;
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
+import lombok.Data;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -11,35 +13,46 @@ import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 
 public class ParticleData {
-    public ResourceLocation getTexture() {
-        return texture;
+    @Data
+    public static class Texture2D {
+        private ResourceLocation rl;
+        private float width, height;
+        private float texOffX, texOffY;
+        private float texWidth, texHeight;
+
+        public Texture2D(ResourceLocation texture, int texOffX, int texOffY, int texWidth, int texHeight, int width, int height) {
+            this.rl = texture;
+            this.texOffX = texOffX;
+            this.texOffY = texOffY;
+            this.texWidth = texWidth;
+            this.texHeight = texHeight;
+            this.width = width;
+            this.height = height;
+        }
+
+        public Texture2D(ResourceLocation texture, int width, int height) {
+            this.rl = texture;
+            this.width = width;
+            this.height = height;
+            this.texWidth = width;
+            this.texHeight = height;
+        }
     }
 
-    public int getTickCount() {
-        return tickCount;
-    }
-
-    private final ResourceLocation texture;
-
-    public float getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    public int getMaxLifetime() {
-        return maxLifetime;
-    }
-
-    public Vector2f getStartPos() {
-        return startPos;
-    }
+    @Getter
+    private final Texture2D texture;
 
     public ParticleEmitter emitter() {
         return emitter;
     }
 
+    @Getter
     private final float maxSpeed;
+    @Getter
     private final int maxLifetime;
+    @Getter
     private final Vector2f startPos;
+    @Getter
     private Vector2f oldPos;
 
     private final ParticleEmitter emitter;
@@ -54,9 +67,10 @@ public class ParticleData {
     public int startColor;
     public int endColor;
 
+    @Getter
     private int tickCount;
 
-    public ParticleData(ResourceLocation texture, float maxSpeed, int maxLifetime, float xStart, float yStart, ParticleEmitter emitter) {
+    public ParticleData(Texture2D texture, float maxSpeed, int maxLifetime, float xStart, float yStart, ParticleEmitter emitter) {
         this.texture = texture;
         this.maxSpeed = maxSpeed;
         this.maxLifetime = maxLifetime;
@@ -97,6 +111,7 @@ public class ParticleData {
 
     public void render(PoseStack pose, float partialTick) {
         Minecraft MC = Minecraft.getInstance();
+        Texture2D tex = getTexture();
 
         float lifePercentage = (float) lifetime / maxLifetime;
 
@@ -108,15 +123,12 @@ public class ParticleData {
         int blue = color & 0xFF;
 
         RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255f);
-        RenderSystem.setShaderTexture(0, getTexture());
+        RenderSystem.setShaderTexture(0, getTexture().rl);
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-        RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), 8, 8, size * lifePercentage);
-        //guiGraphics.drawString(Minecraft.getInstance().font, String.valueOf(getPoseStackSnapshot().last().pose().getRowColumn(2,3)), (int) position.x-4, (int) position.y-8, 0xFFFFFF, true);
-        //System.out.println(oldPos == position);
-        //guiGraphics.blit(getTexture(), (int) position.x, (int) position.y, 8, 8, 0, 0, 8, 8, 8, 8);
+        RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), tex.texOffX, tex.texOffY, tex.texWidth, tex.texHeight, tex.width, tex.height, size * lifePercentage);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
