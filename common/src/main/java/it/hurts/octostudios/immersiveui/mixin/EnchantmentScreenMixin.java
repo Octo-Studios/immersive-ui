@@ -36,6 +36,7 @@ public class EnchantmentScreenMixin {
         for (int ii = 0; ii < 8; ii++) {
             GalacticParticleData particleData = new GalacticParticleData(3f, 52+ii, j+slot.x+8, k+slot.y+8, emitter);
             particleData.direction = VectorUtils.rotate(new Vector2f(0, 1), ii*45f);
+            particleData.size *= 0.75f;
             particleData.speed = 1.5f;
             particleData.angularVelocity = -8;
             list.add(particleData);

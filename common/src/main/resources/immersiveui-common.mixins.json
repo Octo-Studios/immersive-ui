@@ -10,7 +10,10 @@
     "ScreenMixin",
     "ItemStackMixin",
     "EnchantmentMixin",
-    "EnchantmentScreenMixin"
+    "EnchantmentScreenMixin",
+    "AnvilMenuMixin",
+    "AnvilScreenMixin",
+    "AbstractFurnaceScreenMixin"
   ],
   "mixins": [
   ],

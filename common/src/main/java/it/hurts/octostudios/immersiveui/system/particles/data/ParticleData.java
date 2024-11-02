@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
+import oshi.util.tuples.Pair;
 
 public class ParticleData {
     @Data
@@ -59,13 +60,19 @@ public class ParticleData {
 
     public Vector2f position;
     public Vector2f direction;
+    public Vector2f gravityDirection;
     public float speed;
+    public float gravity;
+    private float gravityAccel;
     public float friction;
     public float size;
     public float angularVelocity;
     public int lifetime;
     public int startColor;
     public int endColor;
+    public Pair<Integer, Integer> blendFunc;
+    public boolean enableBlend;
+    public boolean resizeWithLifetime;
 
     @Getter
     private int tickCount;
@@ -85,7 +92,12 @@ public class ParticleData {
         this.startColor = 0xFFFFFFFF;
         this.endColor = 0;
         this.direction = new Vector2f(0,1);
+        this.gravityDirection = new Vector2f(0, 1);
         this.angularVelocity = 0f;
+        this.resizeWithLifetime = true;
+
+        this.enableBlend = true;
+        this.blendFunc = new Pair<>(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
     }
 
     public PoseStack getPoseStackSnapshot() {
@@ -101,9 +113,11 @@ public class ParticleData {
         else this.direction.normalize();
 
         this.speed = Mth.clamp(this.speed*(1-friction), 0, maxSpeed);
+        this.gravityAccel += gravity/20f;
         this.lifetime = Mth.clamp(this.lifetime - 1, 0, maxLifetime);
 
         this.position.add(direction.mul(speed));
+        if (gravityAccel != 0) this.position.add(gravityDirection.x * gravityAccel, gravityDirection.y * gravityAccel);
 
         this.lifetime -= 1;
         tickCount += 1;
@@ -126,9 +140,11 @@ public class ParticleData {
         RenderSystem.setShaderTexture(0, getTexture().rl);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        if (enableBlend) {
+            RenderSystem.blendFunc(blendFunc.getA(), blendFunc.getB());
+        }
 
-        RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), tex.texOffX, tex.texOffY, tex.texWidth, tex.texHeight, tex.width, tex.height, size * lifePercentage);
+        RenderUtils.renderTextureFromCenter(pose, Mth.lerp(partialTick, oldPos.x, position.x), Mth.lerp(partialTick, oldPos.y, position.y), tex.texOffX, tex.texOffY, tex.texWidth, tex.texHeight, tex.width, tex.height, size * (resizeWithLifetime?lifePercentage:1));
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 

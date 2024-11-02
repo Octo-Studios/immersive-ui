@@ -17,6 +17,7 @@ public class GalacticParticleData extends ParticleData {
         this.speed = RANDOM.nextFloat()*2;
         this.endColor = 0x0000ffff;
         this.direction = new Vector2f(RANDOM.nextFloat()-0.5f, RANDOM.nextFloat()-0.5f).normalize();
+        this.resizeWithLifetime = false;
         this.size = 1f;
     }
 }
