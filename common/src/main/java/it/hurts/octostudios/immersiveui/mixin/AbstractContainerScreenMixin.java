@@ -1,8 +1,8 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
+import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
 import it.hurts.octostudios.immersiveui.system.particles.data.GenericParticleData;
 import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
@@ -16,10 +16,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,12 +26,13 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class FloatingItemMixin {
+public abstract class AbstractContainerScreenMixin {
     @Unique
     Random random = new Random();
     @Unique
@@ -68,6 +67,23 @@ public abstract class FloatingItemMixin {
     private float easingSpeed = ImmersiveUI.CONFIG.getFloatingItemEasingSpeed();; // Speed of easing to target angle
     @Unique
     private final float inertiaDamping = 0.75f; // Damping factor for inertia
+
+    @Unique
+    float timer;
+
+    @Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", shift = At.Shift.BEFORE))
+    public void renderBg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+        if (VariableStorage.shakeScreen) {
+            VariableStorage.shakeScreen = false;
+            timer = 8;
+        }
+
+        if (timer > 0) {
+            Random rand = new Random();
+            timer = Mth.clamp(timer-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, 10);
+            guiGraphics.pose().translate(rand.nextInt(-1, 1)*(timer/10f)*1.5f, rand.nextInt(-1, 1)*(timer/10f)*1.5f, 0);
+        }
+    }
 
     @Inject(method = "render", at = @At("TAIL"))
     public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
@@ -180,4 +196,6 @@ public abstract class FloatingItemMixin {
     public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         oX = mouseX; oY = mouseY;
     }
+
+
 }

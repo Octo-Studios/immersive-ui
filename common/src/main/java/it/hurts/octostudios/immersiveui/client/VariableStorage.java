@@ -7,5 +7,5 @@ public class VariableStorage {
     public static long elapsedTime;
     public static final double SCREEN_ZORDER = 50;
 
-    public static boolean anvilParticleSpawn;
+    public static boolean shakeScreen;
 }

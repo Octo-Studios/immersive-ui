@@ -27,6 +27,7 @@ public class EnchantmentScreenMixin {
     public void onMouseClicked(double d, double e, int i, CallbackInfoReturnable<Boolean> ci) {
         AbstractContainerScreen<EnchantmentMenu> screen = ((AbstractContainerScreen<EnchantmentMenu>) (Object) this);
         Slot slot = screen.getMenu().slots.getFirst();
+
         int j = (screen.width - 176) / 2;
         int k = (screen.height - 166) / 2;
         ParticleEmitter emitter = new ParticleEmitter(new Matrix4f(), new Vector2i(slot.x, slot.y));
