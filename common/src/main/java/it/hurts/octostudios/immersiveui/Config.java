@@ -40,12 +40,19 @@ public class Config implements OctoConfig {
     private boolean renderHotbarSelectorAboveItems = false;
 
 //  ------------- Screen Shake -------------
-    @Prop(comment = "Enable screen shake")
+    @Prop(comment = "Enables screen shake.")
     private boolean enableScreenShake = true;
 
     @Prop(comment = "Screen shake timer in ticks.")
     private int shakeTimer = 8;
 
-    @Prop(comment = "Screen shake amplitude")
+    @Prop(comment = "Screen shake amplitude.")
     private float shakeAmplitude = 1.25f;
+
+//  ------------- Enchant Options -------------
+    @Prop(comment = "Enables particles in the enchant(ing/ment) table.")
+    private boolean enableEnchantParticles = true;
+
+    @Prop(comment = "Enables curse formatting.")
+    private boolean enableCurseFormatting = true;
 }

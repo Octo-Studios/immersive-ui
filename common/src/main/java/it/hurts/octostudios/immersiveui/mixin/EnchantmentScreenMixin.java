@@ -1,6 +1,7 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
 import it.hurts.octostudios.immersiveui.system.particles.data.GalacticParticleData;
 import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
@@ -25,6 +26,8 @@ import java.util.List;
 public class EnchantmentScreenMixin {
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleInventoryButtonClick(II)V"))
     public void onMouseClicked(double d, double e, int i, CallbackInfoReturnable<Boolean> ci) {
+        if (!ImmersiveUI.CONFIG.isEnableEnchantParticles()) return;
+
         AbstractContainerScreen<EnchantmentMenu> screen = ((AbstractContainerScreen<EnchantmentMenu>) (Object) this);
         Slot slot = screen.getMenu().slots.getFirst();
 
