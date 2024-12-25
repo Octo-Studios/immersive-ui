@@ -75,13 +75,15 @@ public abstract class AbstractContainerScreenMixin {
     public void renderBg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         if (VariableStorage.shakeScreen) {
             VariableStorage.shakeScreen = false;
-            timer = 8;
+            timer = ImmersiveUI.CONFIG.getShakeTimer();
         }
+        if (!ImmersiveUI.CONFIG.isEnableScreenShake()) return;
 
         if (timer > 0) {
             Random rand = new Random();
-            timer = Mth.clamp(timer-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, 10);
-            guiGraphics.pose().translate(rand.nextInt(-1, 1)*(timer/10f)*1.5f, rand.nextInt(-1, 1)*(timer/10f)*1.5f, 0);
+            timer = Mth.clamp(timer-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer());
+            Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
+            guiGraphics.pose().translate(shakeDirection.x*(timer/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer/ImmersiveUI.CONFIG.getShakeTimer()), 0);
         }
     }
 
@@ -114,12 +116,12 @@ public abstract class AbstractContainerScreenMixin {
         // Apply damping to velocities
         currentAngleVelocity = currentAngleVelocity * (float) Math.pow(inertiaDamping, deltaTime);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(-300, -100, 0);
-        guiGraphics.pose().scale(0.5f, 0.5f, 1f);
-        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getDisplayName().toString(), 2, 2, 0xffffff, true);
-        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getHoverName().toString(), 2, 11, 0xffffff, true);
-        guiGraphics.pose().popPose();
+//        guiGraphics.pose().pushPose();
+//        guiGraphics.pose().translate(-300, -100, 0);
+//        guiGraphics.pose().scale(0.5f, 0.5f, 1f);
+//        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getDisplayName().toString(), 2, 2, 0xffffff, true);
+//        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getHoverName().toString(), 2, 11, 0xffffff, true);
+//        guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(i + 8, j + 8, 232.0f);

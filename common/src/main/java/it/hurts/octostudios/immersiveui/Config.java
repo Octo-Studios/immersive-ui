@@ -38,4 +38,14 @@ public class Config implements OctoConfig {
 
     @Prop(comment = "Moves the hotbar selector above the items. You might want to disable this, if you use resource packs that change the default selector texture.")
     private boolean renderHotbarSelectorAboveItems = false;
+
+//  ------------- Screen Shake -------------
+    @Prop(comment = "Enable screen shake")
+    private boolean enableScreenShake = true;
+
+    @Prop(comment = "Screen shake timer in ticks.")
+    private int shakeTimer = 8;
+
+    @Prop(comment = "Screen shake amplitude")
+    private float shakeAmplitude = 1.25f;
 }
