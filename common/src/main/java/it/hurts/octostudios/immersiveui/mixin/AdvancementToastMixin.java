@@ -1,6 +1,7 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import com.mojang.math.Axis;
+import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +22,8 @@ public class AdvancementToastMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V", shift = At.Shift.BEFORE))
     public void renderItem(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Toast.Visibility> cir) {
+        if (!ImmersiveUI.CONFIG.isEnableAdvancementToastItems()) return;
+
         Minecraft mc = Minecraft.getInstance();
         float delta = mc.player.tickCount + mc.getTimer().getGameTimeDeltaPartialTick(true) + this.advancement.id().hashCode()/1000;
 
@@ -35,6 +38,7 @@ public class AdvancementToastMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V", shift = At.Shift.AFTER))
     public void renderItemEnd(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Toast.Visibility> cir) {
+        if (!ImmersiveUI.CONFIG.isEnableAdvancementToastItems()) return;
         guiGraphics.pose().popPose();
     }
 }

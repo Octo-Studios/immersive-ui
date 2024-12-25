@@ -55,4 +55,8 @@ public class Config implements OctoConfig {
 
     @Prop(comment = "Enables curse formatting.")
     private boolean enableCurseFormatting = true;
+
+//  ------------- Advancement Toasts -------------
+    @Prop(comment = "Enables wobbly items in advancement toasts.")
+    private boolean enableAdvancementToastItems = true;
 }
