@@ -37,7 +37,7 @@ public class CommonCode {
         ItemStack carried = player.containerMenu.getCarried();
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() / 4f;
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 

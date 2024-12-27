@@ -4,28 +4,27 @@ import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.AdvancementToast;
-import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AdvancementToast.class)
 public class AdvancementToastMixin {
     @Shadow @Final private AdvancementHolder advancement;
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V", shift = At.Shift.BEFORE))
-    public void renderItem(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Toast.Visibility> cir) {
+    public void renderItem(GuiGraphics guiGraphics, Font font, long l, CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableAdvancementToastItems()) return;
 
         Minecraft mc = Minecraft.getInstance();
-        float delta = mc.player.tickCount + mc.getTimer().getGameTimeDeltaPartialTick(true) + this.advancement.id().hashCode()/1000;
+        float delta = mc.player.tickCount + mc.getDeltaTracker().getGameTimeDeltaPartialTick(true) + this.advancement.id().hashCode()/1000;
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(16,16,150);
@@ -37,7 +36,7 @@ public class AdvancementToastMixin {
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V", shift = At.Shift.AFTER))
-    public void renderItemEnd(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Toast.Visibility> cir) {
+    public void renderItemEnd(GuiGraphics guiGraphics, Font font, long l, CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableAdvancementToastItems()) return;
         guiGraphics.pose().popPose();
     }

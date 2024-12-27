@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -45,6 +47,8 @@ public abstract class AbstractContainerScreenMixin {
 
     @Shadow protected abstract boolean isHovering(Slot slot, double d, double e);
 
+    @Shadow @Final private static ResourceLocation SLOT_HIGHLIGHT_BACK_SPRITE;
+    @Shadow @Final private static ResourceLocation SLOT_HIGHLIGHT_FRONT_SPRITE;
     @Unique
     private float immersiveui$ticker;
     @Unique
@@ -81,16 +85,16 @@ public abstract class AbstractContainerScreenMixin {
 
         if (timer > 0) {
             Random rand = new Random();
-            timer = Mth.clamp(timer-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer());
+            timer = Mth.clamp(timer-Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer());
             Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
             guiGraphics.pose().translate(shakeDirection.x*(timer/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer/ImmersiveUI.CONFIG.getShakeTimer()), 0);
         }
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
+    @Inject(method = "render", at = @At(value = "TAIL"))
     public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         for (ParticleData data : ParticleStorage.getParticlesData()) {
-            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true));
         }
     }
 
@@ -98,7 +102,7 @@ public abstract class AbstractContainerScreenMixin {
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
         float scale = ImmersiveUI.CONFIG.getHoveredItemScale();
 
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
@@ -170,26 +174,31 @@ public abstract class AbstractContainerScreenMixin {
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);
     }
 
-    @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
+    @Inject(method = "renderSlotHighlightBack", at = @At(value = "HEAD"), cancellable = true)
+    private void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
             ci.cancel();
-            return;
         }
-        guiGraphics.fillGradient(RenderType.gui(), x, y, x + 16, y + 16, -2130706433, -2130706433, blitOffset);
+        if (this.hoveredSlot != null && this.hoveredSlot.isHighlightable()) {
+            guiGraphics.blitSprite(RenderType::guiTexturedOverlay, SLOT_HIGHLIGHT_FRONT_SPRITE, this.hoveredSlot.x - 4, this.hoveredSlot.y - 4, 24, 24);
+        }
+    }
+
+    @Inject(method = "renderSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
+    private void disableSlotHighlight2(GuiGraphics guiGraphics, CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void fixHovering(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, int i, int j, int k, Slot slot) {
-        if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
-            this.hoveredSlot = slot;
-        }
-    }
+//    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
+//    public void fixHovering(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci, int i, int j, int k, Slot slot) {
+//        if (this.isHovering(slot, i, j) && slot.isActive()) {
+//            this.hoveredSlot = slot;
+//        }
+//    }
 
     @Inject(method = "render", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         deltaX = (oX - mouseX) / deltaTime / 20f;
         deltaY = (oY - mouseY) / deltaTime / 20f;
     }

@@ -32,17 +32,17 @@ public abstract class InGameHudMixin {
     @Unique
     private double position = 0.0;
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), method = "renderItemHotbar")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Ljava/util/function/Function;Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), method = "renderItemHotbar")
     private void translatePose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0,0, ImmersiveUI.CONFIG.isRenderHotbarSelectorAboveItems()?400:0);
     }
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderItemHotbar")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Ljava/util/function/Function;Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1, shift = At.Shift.AFTER), method = "renderItemHotbar")
     private void popPose(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         guiGraphics.pose().popPose();
     }
 
-    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), index = 1, method = "renderItemHotbar")
+    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Ljava/util/function/Function;Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), index = 2, method = "renderItemHotbar")
     private int selectedSlotPositionX(int originalX) {
         if (!ImmersiveUI.CONFIG.isEnableHotbarSelectorAnimation()) return originalX;
 
@@ -54,7 +54,7 @@ public abstract class InGameHudMixin {
         assert playerEntity != null;
         int selectedSlot = playerEntity.getInventory().selected;
 
-        double toMove = Math.abs(selectedSlot - position) / 2f * client.getTimer().getRealtimeDeltaTicks() * speed;
+        double toMove = Math.abs(selectedSlot - position) / 2f * client.getDeltaTracker().getRealtimeDeltaTicks() * speed;
 
         if (position > selectedSlot) {
             position = Mth.clamp(position - toMove, selectedSlot, position);

@@ -24,8 +24,8 @@ public class AbstractFurnaceScreenMixin {
     @Unique
     public boolean shouldBurst = false;
 
-    @Inject(method = "render", at = @At("HEAD"))
-    public void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "renderBg", at = @At("HEAD"))
+    public void render(GuiGraphics guiGraphics, float f, int i, int j, CallbackInfo ci) {
         AbstractFurnaceScreen<?> screen = ((AbstractFurnaceScreen<?>) (Object) this);
         AbstractFurnaceMenu menu = screen.getMenu();
 
