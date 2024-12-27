@@ -29,3 +29,10 @@ mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.immersiveui]]
+modId = "octolib"
+mandatory = true
+versionRange = "[0.4.2,)"
+ordering = "NONE"
+side = "BOTH"

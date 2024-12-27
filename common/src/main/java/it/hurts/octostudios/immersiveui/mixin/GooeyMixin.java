@@ -1,6 +1,5 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
 import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
 import it.hurts.octostudios.immersiveui.system.particles.data.ParticleEmitter;
@@ -18,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
-import static it.hurts.octostudios.immersiveui.client.VariableStorage.shouldTick;
-
 @Mixin(Gui.class)
 public class GooeyMixin {
     @Shadow @Final private Minecraft minecraft;
@@ -33,7 +30,6 @@ public class GooeyMixin {
 
     @Inject(method = "tick()V", at = @At("TAIL"))
     public void tickCode(CallbackInfo ci) {
-        shouldTick = true;
         Set<ParticleEmitter> toRemoveSet = new HashSet<>();
 
         for (Map.Entry<ParticleEmitter, List<ParticleData>> entry : ParticleStorage.EMITTERS.entrySet()) {

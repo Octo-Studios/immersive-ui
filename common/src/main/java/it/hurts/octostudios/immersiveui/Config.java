@@ -15,12 +15,12 @@ public class Config implements OctoConfig {
 
     @Prop(comment = "Enables hovering of matching items.")
     private boolean enableMatchingItemHovering = true;
-    
-    @Prop(comment = "Enables particles for rare items.")
-    private boolean enableRarityParticles = true;
 
     @Prop(comment = "Enables vanilla slot highlighting")
     private boolean enableVanillaSlotHighlighting = true;
+
+    @Prop(comment = "Enables particles for rare items.")
+    private boolean enableRarityParticles = true;
 
     @Prop(comment = "Affects the speed of the hotbar selector.")
     private double hotbarSelectorSpeed = 3d;
@@ -39,4 +39,25 @@ public class Config implements OctoConfig {
 
     @Prop(comment = "Moves the hotbar selector above the items. You might want to disable this, if you use resource packs that change the default selector texture.")
     private boolean renderHotbarSelectorAboveItems = false;
+
+    //  ------------- Screen Shake -------------
+    @Prop(comment = "Enables screen shake.")
+    private boolean enableScreenShake = true;
+
+    @Prop(comment = "Screen shake timer in ticks.")
+    private int shakeTimer = 8;
+
+    @Prop(comment = "Screen shake amplitude.")
+    private float shakeAmplitude = 1.25f;
+
+    //  ------------- Enchant Options -------------
+    @Prop(comment = "Enables particles in the enchant(ing/ment) table.")
+    private boolean enableEnchantParticles = true;
+
+    @Prop(comment = "Enables curse formatting.")
+    private boolean enableCurseFormatting = true;
+
+    //  ------------- Advancement Toasts -------------
+    @Prop(comment = "Enables wobbly items in advancement toasts.")
+    private boolean enableAdvancementToastItems = true;
 }

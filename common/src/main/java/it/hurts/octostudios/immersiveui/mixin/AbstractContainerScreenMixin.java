@@ -2,6 +2,7 @@ package it.hurts.octostudios.immersiveui.mixin;
 
 import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
+import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
 import it.hurts.octostudios.immersiveui.system.particles.data.GenericParticleData;
 import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
@@ -11,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class FloatingItemMixin {
+public abstract class AbstractContainerScreenMixin {
     @Unique
     Random random = new Random();
     @Unique
@@ -66,6 +68,25 @@ public abstract class FloatingItemMixin {
     @Unique
     private final float inertiaDamping = 0.75f; // Damping factor for inertia
 
+    @Unique
+    float timer;
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V"))
+    public void renderBg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+        if (VariableStorage.shakeScreen) {
+            VariableStorage.shakeScreen = false;
+            timer = ImmersiveUI.CONFIG.getShakeTimer();
+        }
+        if (!ImmersiveUI.CONFIG.isEnableScreenShake()) return;
+
+        if (timer > 0) {
+            Random rand = new Random();
+            timer = Mth.clamp(timer-Minecraft.getInstance().getDeltaFrameTime(), 0, ImmersiveUI.CONFIG.getShakeTimer());
+            Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
+            guiGraphics.pose().translate(shakeDirection.x*(timer/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer/ImmersiveUI.CONFIG.getShakeTimer()), 0);
+        }
+    }
+
     @Inject(method = "render", at = @At("TAIL"))
     public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         for (ParticleData data : ParticleStorage.getParticlesData()) {
@@ -100,25 +121,32 @@ public abstract class FloatingItemMixin {
         guiGraphics.pose().scale(scale, scale, 1f);
         if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
         guiGraphics.renderItem(itemStack, -8, -8);
-        if (itemStack.getRarity() != Rarity.COMMON && ImmersiveUI.CONFIG.isEnableRarityParticles()) {
-            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
-            if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
-                ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
-                ParticleData particle = new GenericParticleData(
-                        itemStack.getRarity().color.getColor() != null?itemStack.getRarity().color.getColor()+0xff000000:0xffff00ff,
-                        0x0,
-                        Mth.abs(deltaY)+Mth.abs(deltaX),
-                        0 + random.nextFloat(-1,1),
-                        0 + random.nextFloat(-1,1),
-                        random.nextFloat(0.8f, 1.25f),
-                        random.nextInt(12, 30),
-                        emitter
-                );
-                particle.direction = new Vector2f(-deltaX, -deltaY).normalize();
-                ParticleStorage.addParticle(
-                        emitter,
-                        particle
-                );
+        if (ImmersiveUI.CONFIG.isEnableRarityParticles()) {
+            List<Integer> colors = itemStack.getHoverName().getSiblings().stream().map(c -> c.getStyle().getColor() == null ? 0 : c.getStyle().getColor().getValue()).toList();
+            int color = colors.isEmpty() ? 0xffffff : colors.get(random.nextInt(colors.size()));
+            color = colors.isEmpty() ? itemStack.getDisplayName().getStyle().getColor() != null ? itemStack.getDisplayName().getStyle().getColor().getValue() : 0xffffff : color;
+
+            if (color != 0xffffff) {
+                ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
+                if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
+                    ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
+
+                    ParticleData particle = new GenericParticleData(
+                            0xff000000 + color,
+                            0x0,
+                            Mth.abs(deltaY) + Mth.abs(deltaX),
+                            0 + random.nextFloat(-1, 1),
+                            0 + random.nextFloat(-1, 1),
+                            random.nextFloat(0.8f, 1.25f),
+                            random.nextInt(12, 30),
+                            emitter
+                    );
+                    particle.direction = new Vector2f(-deltaX, -deltaY).normalize();
+                    ParticleStorage.addParticle(
+                            emitter,
+                            particle
+                    );
+                }
             }
         }
         Font font = Minecraft.getInstance().font;
@@ -136,6 +164,11 @@ public abstract class FloatingItemMixin {
 
     @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
     private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
+        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
+            ci.cancel();
+            return;
+        }
+        guiGraphics.fillGradient(RenderType.gui(), x, y, x + 16, y + 16, -2130706433, -2130706433, blitOffset);
         ci.cancel();
     }
 
