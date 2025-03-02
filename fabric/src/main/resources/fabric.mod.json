@@ -9,7 +9,7 @@
   ],
   "icon": "icon.png",
   "license": "${mod_license}",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
       "${mod_group}.fabric.ImmersiveUIFabric"
