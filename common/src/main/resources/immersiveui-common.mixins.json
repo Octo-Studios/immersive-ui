@@ -4,18 +4,18 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "AbstractContainerScreenMixin",
     "AbstractFurnaceMenuAccessor",
     "AbstractFurnaceScreenMixin",
     "AdvancementToastMixin",
     "AnvilMenuMixin",
-    "SmithingMenuMixin",
     "EnchantmentMixin",
     "EnchantmentScreenMixin",
-    "AbstractContainerScreenMixin",
     "GooeyMixin",
     "InGameHudMixin",
     "ItemStackMixin",
-    "ScreenMixin"
+    "ScreenMixin",
+    "SmithingMenuMixin"
   ],
   "mixins": [
   ],

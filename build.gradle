@@ -27,6 +27,10 @@ subprojects {
             name = "OctoStudios"
             url = uri("https://maven.octo-studios.com/releases")
         }
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
     }
 
     dependencies {
@@ -35,8 +39,10 @@ subprojects {
         loom {
             silentMojangMappingsLicense()
         }
-
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
+        }
 
         compileOnly 'org.projectlombok:lombok:1.18.32'
         annotationProcessor 'org.projectlombok:lombok:1.18.32'

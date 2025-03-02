@@ -96,7 +96,7 @@ public abstract class AbstractContainerScreenMixin {
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
-        float scale = ImmersiveUI.CONFIG.getHoveredItemScale();
+        float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
 
         float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();

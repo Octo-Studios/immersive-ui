@@ -27,6 +27,9 @@ public class Config implements OctoConfig {
     @Prop(comment = "Affects the size of the hovered item.")
     private float hoveredItemScale = 1.4f;
 
+    @Prop(comment = "Affects the size of the floating item.")
+    private float floatingItemScale = 1.4f;
+
     @Prop(comment = "Affects the hover amplitude of items, that match to the item that is carried in the cursor.")
     private float matchingItemHoverAmplitude = 0.8f;
 
@@ -53,7 +56,7 @@ public class Config implements OctoConfig {
     @Prop(comment = "Enables particles in the enchant(ing/ment) table.")
     private boolean enableEnchantParticles = true;
 
-    @Prop(comment = "Enables curse formatting.")
+    @Prop(comment = "Enables special formatting for items with cursed enchantments.")
     private boolean enableCurseFormatting = true;
 
 //  ------------- Advancement Toasts -------------
