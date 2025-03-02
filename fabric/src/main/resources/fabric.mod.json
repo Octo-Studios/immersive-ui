@@ -26,8 +26,5 @@
     "java": ">=21",
     "octolib": ">=0.4.2",
     "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
