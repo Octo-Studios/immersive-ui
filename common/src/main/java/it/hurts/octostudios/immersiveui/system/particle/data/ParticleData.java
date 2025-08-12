@@ -1,4 +1,4 @@
-package it.hurts.octostudios.immersiveui.system.particles.data;
+package it.hurts.octostudios.immersiveui.system.particle.data;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

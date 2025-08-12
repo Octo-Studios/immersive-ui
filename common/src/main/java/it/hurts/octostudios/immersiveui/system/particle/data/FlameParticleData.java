@@ -1,4 +1,4 @@
-package it.hurts.octostudios.immersiveui.system.particles.data;
+package it.hurts.octostudios.immersiveui.system.particle.data;
 
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
 import net.minecraft.resources.ResourceLocation;

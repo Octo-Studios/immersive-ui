@@ -3,14 +3,14 @@ package it.hurts.octostudios.immersiveui.mixin;
 import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.client.VariableStorage;
-import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
-import it.hurts.octostudios.immersiveui.system.particles.data.GenericParticleData;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleEmitter;
+import it.hurts.octostudios.immersiveui.system.particle.RarityUIParticle;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
+import it.hurts.octostudios.octolib.client.particle.ParticleSystem;
+import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
@@ -19,14 +19,12 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
-import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
@@ -45,6 +43,8 @@ public abstract class AbstractContainerScreenMixin {
 
     @Shadow protected abstract boolean isHovering(Slot slot, double d, double e);
 
+    @Shadow protected int leftPos;
+    @Shadow protected int topPos;
     @Unique
     private float immersiveui$ticker;
     @Unique
@@ -89,9 +89,10 @@ public abstract class AbstractContainerScreenMixin {
 
     @Inject(method = "render", at = @At("TAIL"))
     public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        for (ParticleData data : ParticleStorage.getParticlesData()) {
-            data.render(data.getPoseStackSnapshot(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
-        }
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(leftPos, topPos, 232f);
+        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+        guiGraphics.pose().popPose();
     }
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
@@ -135,28 +136,26 @@ public abstract class AbstractContainerScreenMixin {
             color = colors.isEmpty() ? itemStack.getDisplayName().getStyle().getColor() != null ? itemStack.getDisplayName().getStyle().getColor().getValue() : 0xffffff : color;
 
             if (color != 0xffffff) {
-                ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(-8, -8));
-                if (!ParticleStorage.EMITTERS.containsKey(emitter) && (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0)) {
-                    ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
-
-                    ParticleData particle = new GenericParticleData(
-                            0xff000000 + color,
-                            0x0,
-                            Mth.abs(deltaY) + Mth.abs(deltaX),
-                            0 + random.nextFloat(-1, 1),
-                            0 + random.nextFloat(-1, 1),
-                            random.nextFloat(0.8f, 1.25f),
-                            random.nextInt(12, 30),
-                            emitter
+                if (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0) {
+                    Vector2f direction = new Vector2f(deltaX, deltaY);
+                    UIParticle particle = new RarityUIParticle(
+                            random.nextFloat(0.5f, 0.625f)*direction.length(),
+                            random.nextInt(12, 20),
+                            i+8+random.nextFloat(-4,4),
+                            j+8+random.nextFloat(-4,4),
+                            -deltaX,
+                            -deltaY,
+                            random.nextFloat(-10, 10),
+                            color,
+                            UIParticle.Layer.SCREEN,
+                            232f
                     );
-                    particle.direction = new Vector2f(-deltaX, -deltaY).normalize();
-                    ParticleStorage.addParticle(
-                            emitter,
-                            particle
-                    );
+                    particle.setScreen((Screen) (Object) this);
+                    particle.instantiate();
                 }
             }
         }
+
         Font font = Minecraft.getInstance().font;
         guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);

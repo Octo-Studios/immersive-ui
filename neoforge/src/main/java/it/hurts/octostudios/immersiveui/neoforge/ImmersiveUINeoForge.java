@@ -1,7 +1,7 @@
 package it.hurts.octostudios.immersiveui.neoforge;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.octolib.modules.config.ConfigManager;
+import it.hurts.octostudios.octolib.module.config.ConfigManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;

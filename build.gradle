@@ -1,7 +1,7 @@
 plugins {
-    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.10-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id 'com.gradleup.shadow' version '8.3.6' apply false
 }
 
 architectury {
@@ -11,6 +11,13 @@ architectury {
 allprojects {
     group = rootProject.mod_group
     version = rootProject.mod_version + "+" + rootProject.minecraft_version
+
+    repositories {
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
+    }
 }
 
 subprojects {
@@ -23,13 +30,13 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
+        flatDir {
+            dirs 'libs'
+        }
         maven {
             name = "OctoStudios"
             url = uri("https://maven.octo-studios.com/releases")
-        }
-        maven {
-            name = 'ParchmentMC'
-            url = 'https://maven.parchmentmc.org'
         }
     }
 
@@ -39,6 +46,7 @@ subprojects {
         loom {
             silentMojangMappingsLicense()
         }
+
         mappings loom.layered() {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
@@ -51,6 +59,37 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
         implementation 'org.jetbrains:annotations:20.1.0'
+
+        if (file("libs").isDirectory()) {
+            file("libs").eachFile { file ->
+                def splitPos = file.name.lastIndexOf("-")
+
+                if (file.name != "desktop.ini") {
+                    println file.name
+
+                    def modartifact = file.name.substring(0, splitPos)
+                    def modversion = file.name.substring(splitPos + 1, file.name.length() - 4)
+                    def modreference = "lib:$modartifact:$modversion"
+
+                    if ("$project.name".equalsIgnoreCase("neoforge")) {
+                        dependencies {
+                            implementation (project.dependencies.create(modreference) {
+                                transitive = false
+                            })
+                        }
+                    } else if ("$project.name".equalsIgnoreCase("fabric")) {
+                        dependencies {
+                            modImplementation project.dependencies.create(modreference);
+                        }
+                    } else {
+                        dependencies {
+                            modImplementation project.dependencies.create(modreference);
+                        }
+                    }
+
+                }
+            }
+        } else file("libs").mkdir()
     }
 
     java {
@@ -62,24 +101,6 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         it.options.release = 21
-    }
-
-    tasks.register('collectJars', Copy) {
-        subprojects {
-            def ignoredProjects = ['common'];
-
-            if (!ignoredProjects.contains(project.name)) {
-                def remapJar = project.tasks.named('remapJar')
-
-                dependsOn remapJar
-                from remapJar
-                into 'build/libs'
-            }
-        }
-    }
-
-    assemble {
-        dependsOn(collectJars)
     }
 
     publishing {

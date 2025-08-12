@@ -1,9 +1,8 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import it.hurts.octostudios.immersiveui.client.VariableStorage;
-import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleEmitter;
+import it.hurts.octostudios.immersiveui.system.particle.ParticleStorage;
+import it.hurts.octostudios.immersiveui.system.particle.data.ParticleData;
+import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;

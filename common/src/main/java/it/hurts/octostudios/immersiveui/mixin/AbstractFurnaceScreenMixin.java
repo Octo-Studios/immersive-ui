@@ -1,14 +1,11 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import it.hurts.octostudios.immersiveui.system.particles.ParticleStorage;
-import it.hurts.octostudios.immersiveui.system.particles.data.FlameParticleData;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleEmitter;
-import net.minecraft.client.Minecraft;
+import it.hurts.octostudios.immersiveui.system.particle.ParticleStorage;
+import it.hurts.octostudios.immersiveui.system.particle.data.FlameParticleData;
+import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

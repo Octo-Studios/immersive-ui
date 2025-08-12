@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
 }
 
 architectury {
@@ -20,6 +20,10 @@ configurations {
         canBeResolved = true
         canBeConsumed = false
     }
+}
+
+repositories {
+
 }
 
 dependencies {

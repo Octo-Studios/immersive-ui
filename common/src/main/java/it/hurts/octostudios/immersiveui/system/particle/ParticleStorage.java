@@ -1,7 +1,7 @@
-package it.hurts.octostudios.immersiveui.system.particles;
+package it.hurts.octostudios.immersiveui.system.particle;
 
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleData;
-import it.hurts.octostudios.immersiveui.system.particles.data.ParticleEmitter;
+import it.hurts.octostudios.immersiveui.system.particle.data.ParticleData;
+import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
 
 import java.util.*;
 
