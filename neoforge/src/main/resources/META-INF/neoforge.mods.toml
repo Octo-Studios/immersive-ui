@@ -33,6 +33,6 @@ side = "CLIENT"
 [[dependencies.${mod_id}]]
 modId = "octolib"
 type = "required"
-versionRange = "[0.4.2,)"
+versionRange = "[0.6.0.3,)"
 ordering = "NONE"
 side = "CLIENT"

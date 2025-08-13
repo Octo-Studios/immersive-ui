@@ -33,6 +33,7 @@ public abstract class FloatingItemMixin {
     protected Slot hoveredSlot;
 
 
+
     @Inject(method = "renderSlotContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE))
     public void renderSize(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, String countString, CallbackInfo ci) {
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);

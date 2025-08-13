@@ -1,7 +1,7 @@
 package it.hurts.octostudios.immersiveui.fabric;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.octolib.modules.config.ConfigManager;
+import it.hurts.octostudios.octolib.module.config.ConfigManager;
 import net.fabricmc.api.ModInitializer;
 
 public final class ImmersiveUIFabric implements ModInitializer {

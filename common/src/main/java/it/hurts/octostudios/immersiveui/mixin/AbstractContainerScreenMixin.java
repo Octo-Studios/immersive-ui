@@ -2,8 +2,11 @@ package it.hurts.octostudios.immersiveui.mixin;
 
 import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
+import it.hurts.octostudios.immersiveui.client.MouseInfo;
+import it.hurts.octostudios.immersiveui.client.RenderInfo;
 import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.client.particle.RarityUIParticle;
+import it.hurts.octostudios.immersiveui.compat.ExtraScreenData;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
 import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import net.minecraft.client.Minecraft;
@@ -21,15 +24,18 @@ import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class AbstractContainerScreenMixin {
+public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     @Unique
     Random random = new Random();
     @Unique
@@ -46,44 +52,36 @@ public abstract class AbstractContainerScreenMixin {
     @Shadow protected int topPos;
     @Unique
     private float immersiveui$ticker;
-    @Unique
-    float deltaX = 0f;
-    @Unique
-    float deltaY = 0f;
-    @Unique
-    private int oX = Integer.MIN_VALUE; // Initially not set
-    @Unique
-    private int oY = Integer.MIN_VALUE; // Initially not set
-    @Unique
-    private float currentAngle = 0.0f;
-    @Unique
-    private float targetAngle = 0.0f;
+
 
     @Unique
-    private float currentAngleVelocity = 0.0f;
+    private MouseInfo mouseInfo = new MouseInfo();
+    @Unique
+    private RenderInfo renderInfo = new RenderInfo();
 
     @Unique
-    private float easingSpeed = ImmersiveUI.CONFIG.getFloatingItemEasingSpeed();; // Speed of easing to target angle
-    @Unique
-    private final float inertiaDamping = 0.75f; // Damping factor for inertia
+    AtomicReference<Float> timerCommon = new AtomicReference<>(0f);
+//    @Unique
+//    AtomicBoolean shakeScreenCommon = new AtomicBoolean(false);
 
-    @Unique
-    float timer;
+
+    @Override
+    public MouseInfo getMouseInfo() {
+        return mouseInfo;
+    }
+
+    @Override
+    public RenderInfo getRenderInfo() {
+        return renderInfo;
+    }
 
     @Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", shift = At.Shift.BEFORE))
     public void renderBg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        if (VariableStorage.shakeScreen) {
-            VariableStorage.shakeScreen = false;
-            timer = ImmersiveUI.CONFIG.getShakeTimer();
+        if (ImmersiveUI.SOPHISTICATED_COMPAT.isStorageScreenBase((Screen) (Object) this)) {
+            return;
         }
-        if (!ImmersiveUI.CONFIG.isEnableScreenShake()) return;
 
-        if (timer > 0) {
-            Random rand = new Random();
-            timer = Mth.clamp(timer-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer());
-            Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
-            guiGraphics.pose().translate(shakeDirection.x*(timer/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer/ImmersiveUI.CONFIG.getShakeTimer()), 0);
-        }
+        CommonCode.shakeScreen(guiGraphics, (Screen) (Object) this, timerCommon, 1f);
     }
 
 //    @Inject(method = "render", at = @At("TAIL"))
@@ -96,71 +94,12 @@ public abstract class AbstractContainerScreenMixin {
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
-        float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
+//        if (ImmersiveUI.SOPHISTICATED_COMPAT.isStorageScreenBase((Screen) (Object) this)) {
+//            return;
+//        }
 
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
-
-        if (oX != Integer.MIN_VALUE && oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
-            targetAngle = Mth.clamp(-deltaX / 8f * amplitude, -Mth.HALF_PI/(2/amplitude), Mth.HALF_PI/(2/amplitude));
-
-            // Update velocities based on change in target positions
-            currentAngleVelocity += (targetAngle - currentAngle) * easingSpeed * deltaTime;
-        }
-
-        //currentAngleVelocity = Mth.clamp(currentAngleVelocity,-0.5f,0.5f);
-
-        // Apply velocities to current angles
-        currentAngle = Mth.clamp(currentAngle + currentAngleVelocity * deltaTime, -Mth.HALF_PI/(2/amplitude), Mth.HALF_PI/(2/amplitude));
-
-        // Apply damping to velocities
-        currentAngleVelocity = currentAngleVelocity * (float) Math.pow(inertiaDamping, deltaTime);
-
-//        guiGraphics.pose().pushPose();
-//        guiGraphics.pose().translate(-300, -100, 0);
-//        guiGraphics.pose().scale(0.5f, 0.5f, 1f);
-//        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getDisplayName().toString(), 2, 2, 0xffffff, true);
-//        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getHoverName().toString(), 2, 11, 0xffffff, true);
-//        guiGraphics.pose().popPose();
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(i + 8, j + 8, 300.0f);
-        guiGraphics.pose().scale(scale, scale, 1f);
-        if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
-        guiGraphics.renderItem(itemStack, -8, -8);
-
-        if (ImmersiveUI.CONFIG.isEnableRarityParticles()) {
-            List<Integer> colors = itemStack.getHoverName().getSiblings().stream().map(c -> c.getStyle().getColor() == null ? 0 : c.getStyle().getColor().getValue()).toList();
-            int color = colors.isEmpty() ? 0xffffff : colors.get(random.nextInt(colors.size()));
-            color = colors.isEmpty() ? itemStack.getDisplayName().getStyle().getColor() != null ? itemStack.getDisplayName().getStyle().getColor().getValue() : 0xffffff : color;
-
-            if (color != 0xffffff) {
-                if (Mth.abs(deltaX) > 0f || Mth.abs(deltaY) > 0) {
-                    Vector2f direction = new Vector2f(deltaX, deltaY);
-                    UIParticle particle = new RarityUIParticle(
-                            random.nextFloat(0.5f, 0.625f)*direction.length(),
-                            random.nextInt(12, 20),
-                            i+8+random.nextFloat(-4,4),
-                            j+8+random.nextFloat(-4,4),
-                            -deltaX,
-                            -deltaY,
-                            random.nextFloat(-10, 10),
-                            color,
-                            UIParticle.Layer.SCREEN,
-                            233f
-                    );
-                    particle.setScreen((Screen) (Object) this);
-                    particle.instantiate();
-                }
-            }
-        }
-
-        Font font = Minecraft.getInstance().font;
-        guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
-        //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
-        guiGraphics.pose().popPose();
-
-        ci.cancel();
+        CommonCode.renderFloating((Screen) (Object) this, guiGraphics, mouseInfo, i, j, itemStack, random, renderInfo, string, ci);
+        mouseInfo.oX = i; mouseInfo.oY = j;
     }
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
@@ -185,17 +124,21 @@ public abstract class AbstractContainerScreenMixin {
         }
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(method = "renderBackground", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        if (mouseInfo == null) {
+            mouseInfo = new MouseInfo();
+            renderInfo = new RenderInfo();
+            random = new Random();
+        }
+
         float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        deltaX = (oX - mouseX) / deltaTime / 20f;
-        deltaY = (oY - mouseY) / deltaTime / 20f;
+        mouseInfo.deltaX = (mouseInfo.oX - mouseX) / deltaTime / 20f;
+        mouseInfo.deltaY = (mouseInfo.oY - mouseY) / deltaTime / 20f;
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
+    @Inject(method = "render", at = @At("RETURN"))
     public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        oX = mouseX; oY = mouseY;
+        mouseInfo.oX = mouseX; mouseInfo.oY = mouseY;
     }
-
-
 }
