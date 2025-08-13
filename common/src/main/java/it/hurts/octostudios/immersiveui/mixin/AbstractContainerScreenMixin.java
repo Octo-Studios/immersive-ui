@@ -104,6 +104,10 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
     public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+        if (expandingProgress == null) {
+            expandingProgress = new HashMap<>();
+        }
+
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);
     }
 
