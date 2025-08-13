@@ -1,33 +1,20 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.immersiveui.system.particle.ParticleStorage;
-import it.hurts.octostudios.immersiveui.system.particle.data.GalacticParticleData;
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleData;
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
+
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
 import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
 import it.hurts.octostudios.octolib.client.particle.GalacticUIParticle;
-import it.hurts.octostudios.octolib.client.particle.ParticleSystem;
 import it.hurts.octostudios.octolib.client.particle.UIParticle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.inventory.Slot;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
-import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mixin(EnchantmentScreen.class)
 public class EnchantmentScreenMixin {

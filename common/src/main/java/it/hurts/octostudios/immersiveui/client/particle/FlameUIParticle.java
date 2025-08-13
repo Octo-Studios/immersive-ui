@@ -1,10 +1,7 @@
-package it.hurts.octostudios.immersiveui.system.particle;
+package it.hurts.octostudios.immersiveui.client.particle;
 
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleData;
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
 import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
-import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import it.hurts.octostudios.octolib.util.OctoColor;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2f;
@@ -22,7 +19,7 @@ public class FlameUIParticle extends ExtendedUIParticle {
         this.getTransform().setSize(new Vector2f(1.25f, 1.25f));
         this.setColors(OctoColor.WHITE);
         this.setGravityDirection(new Vector2f(0, -1));
-        this.setGravity(0.5f);
+        this.setGravity(0.2f);
         this.setDirection(VectorUtils.rotate(new Vector2f(0, -1), (rand.nextFloat()-0.5f)*60f));
 
         this.getTransform().updateOldValues();

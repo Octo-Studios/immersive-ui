@@ -1,7 +1,6 @@
-package it.hurts.octostudios.immersiveui.system.particle;
+package it.hurts.octostudios.immersiveui.client.particle;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleData;
 import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
 import it.hurts.octostudios.octolib.util.OctoColor;
 import net.minecraft.resources.ResourceLocation;

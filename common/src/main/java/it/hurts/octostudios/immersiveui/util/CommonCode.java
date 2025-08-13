@@ -22,10 +22,6 @@ public class CommonCode {
         if (elapsedTime >= TARGET_INTERVAL_MS) {
             lastExecutedTime = currentTime;
         }
-
-//        for (ParticleData data : ParticleStorage.getParticlesData().stream().filter(data -> data.getPoseStackSnapshot().last().pose().getRowColumn(2,3) <= SCREEN_ZORDER).toList()) {
-//            data.render(data.getPoseStackSnapshot(), partialTick);
-//        }
     }
 
     public static void floatingRenderSize(GuiGraphics guiGraphics, Slot slot, Slot hoveredSlot, Map<Slot, Float> expandingProgress) {

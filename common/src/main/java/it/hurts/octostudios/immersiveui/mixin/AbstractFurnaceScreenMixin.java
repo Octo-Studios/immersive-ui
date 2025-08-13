@@ -1,6 +1,6 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import it.hurts.octostudios.immersiveui.system.particle.FlameUIParticle;
+import it.hurts.octostudios.immersiveui.client.particle.FlameUIParticle;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
