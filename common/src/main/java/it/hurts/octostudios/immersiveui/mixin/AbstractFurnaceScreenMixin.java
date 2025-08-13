@@ -1,19 +1,15 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import it.hurts.octostudios.immersiveui.system.particle.ParticleStorage;
-import it.hurts.octostudios.immersiveui.system.particle.data.FlameParticleData;
-import it.hurts.octostudios.immersiveui.system.particle.data.ParticleEmitter;
+import it.hurts.octostudios.immersiveui.system.particle.FlameUIParticle;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
-import org.joml.Vector2i;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 @Mixin(AbstractFurnaceScreen.class)
@@ -26,20 +22,16 @@ public class AbstractFurnaceScreenMixin {
         AbstractFurnaceScreen<?> screen = ((AbstractFurnaceScreen<?>) (Object) this);
         AbstractFurnaceMenu menu = screen.getMenu();
 
-        int leftPos = (screen.width - 176) / 2;
-        int topPos = (screen.height - 166) / 2;
-
         if (!menu.isLit()) return;
         Random random = new Random();
 
         if (menu.getLitProgress() == 1 && !shouldBurst) {
             shouldBurst = true;
-            ParticleEmitter emitter = new ParticleEmitter(guiGraphics.pose().last().pose(), new Vector2i(0,0));
-            if (!ParticleStorage.EMITTERS.containsKey(emitter)) ParticleStorage.EMITTERS.put(emitter, new ArrayList<>());
 
             for (int ii = 0; ii < 8; ii++) {
-                FlameParticleData particle = new FlameParticleData(leftPos+menu.getSlot(1).x+8+random.nextInt(-6,6), topPos+menu.getSlot(1).y+10+random.nextInt(-6,6), random.nextInt(30,50), emitter);
-                ParticleStorage.addParticle(emitter, particle);
+                FlameUIParticle particle = new FlameUIParticle(menu.getSlot(1).x+8+random.nextInt(-6,6), menu.getSlot(1).y+10+random.nextInt(-6,6), random.nextInt(16,24));
+                particle.setScreen(screen);
+                particle.instantiate();
             }
         }
         if (menu.getLitProgress() != 1 && shouldBurst) {

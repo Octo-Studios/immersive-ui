@@ -34,7 +34,7 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
-    implementation "it.hurts.octostudios.octolib:octolib-neoforge:$rootProject.octolib_version"
+    //implementation "it.hurts.octostudios.octolib:octolib-neoforge:$rootProject.octolib_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

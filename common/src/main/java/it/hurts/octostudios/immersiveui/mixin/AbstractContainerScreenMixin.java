@@ -87,13 +87,13 @@ public abstract class AbstractContainerScreenMixin {
         }
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
-    public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(leftPos, topPos, 232f);
-        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-        guiGraphics.pose().popPose();
-    }
+//    @Inject(method = "render", at = @At("TAIL"))
+//    public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+//        guiGraphics.pose().pushPose();
+//        guiGraphics.pose().translate(leftPos, topPos, 232f);
+//        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+//        guiGraphics.pose().popPose();
+//    }
 
     @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
     public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
@@ -125,7 +125,7 @@ public abstract class AbstractContainerScreenMixin {
 //        guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(i + 8, j + 8, 232.0f);
+        guiGraphics.pose().translate(i + 8, j + 8, 300.0f);
         guiGraphics.pose().scale(scale, scale, 1f);
         if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(currentAngle) > 0.01f ? currentAngle : 0f));
         guiGraphics.renderItem(itemStack, -8, -8);
@@ -148,7 +148,7 @@ public abstract class AbstractContainerScreenMixin {
                             random.nextFloat(-10, 10),
                             color,
                             UIParticle.Layer.SCREEN,
-                            232f
+                            233f
                     );
                     particle.setScreen((Screen) (Object) this);
                     particle.instantiate();

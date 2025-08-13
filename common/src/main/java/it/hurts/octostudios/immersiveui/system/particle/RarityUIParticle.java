@@ -21,7 +21,7 @@ public class RarityUIParticle extends ExtendedUIParticle {
     public void tick() {
         super.tick();
 
-        float timeRatio = (float) getTime() / getLifetime();
+        float timeRatio = this.getTimeRatio(0f);
         this.getTransform().setSize(new Vector2f(1-timeRatio, 1-timeRatio));
     }
 }
