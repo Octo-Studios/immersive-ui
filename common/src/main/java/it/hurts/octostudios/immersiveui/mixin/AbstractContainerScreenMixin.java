@@ -1,37 +1,30 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
-import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.client.MouseInfo;
 import it.hurts.octostudios.immersiveui.client.RenderInfo;
-import it.hurts.octostudios.immersiveui.client.VariableStorage;
-import it.hurts.octostudios.immersiveui.client.particle.RarityUIParticle;
 import it.hurts.octostudios.immersiveui.compat.ExtraScreenData;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
-import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(AbstractContainerScreen.class)
@@ -134,10 +127,15 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     }
 
     @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
+    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffsetOld, @NotNull CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
             ci.cancel();
         }
+    }
+
+    @ModifyArg(method = "renderSlotHighlight", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(Lnet/minecraft/client/renderer/RenderType;IIIIIII)V"))
+    private static RenderType modify(RenderType renderType) {
+        return RenderType.gui();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
