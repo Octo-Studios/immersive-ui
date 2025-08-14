@@ -67,12 +67,38 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 
     @Override
     public MouseInfo getMouseInfo() {
+        if (mouseInfo == null) {
+            mouseInfo = new MouseInfo();
+        }
+
         return mouseInfo;
     }
 
     @Override
     public RenderInfo getRenderInfo() {
+        if (renderInfo == null) {
+            renderInfo = new RenderInfo();
+        }
+
         return renderInfo;
+    }
+
+    @Override
+    public Random getRandom() {
+        if (random == null) {
+            random = new Random();
+        }
+
+        return random;
+    }
+
+    @Override
+    public Map<Slot, Float> getExpandingProgress() {
+        if (expandingProgress == null) {
+            expandingProgress = new HashMap<>();
+        }
+
+        return expandingProgress;
     }
 
     @Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", shift = At.Shift.BEFORE))
@@ -98,27 +124,20 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 //            return;
 //        }
 
-        CommonCode.renderFloating((Screen) (Object) this, guiGraphics, mouseInfo, i, j, itemStack, random, renderInfo, string, ci);
-        mouseInfo.oX = i; mouseInfo.oY = j;
+        CommonCode.renderFloating((Screen) (Object) this, guiGraphics, getMouseInfo(), i, j, itemStack, getRandom(), getRenderInfo(), string, ci);
+        getMouseInfo().oX = i; getMouseInfo().oY = j;
     }
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
     public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        if (expandingProgress == null) {
-            expandingProgress = new HashMap<>();
-        }
-
-        CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);
+        CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, getExpandingProgress());
     }
 
     @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
     private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
             ci.cancel();
-            return;
         }
-        guiGraphics.fillGradient(RenderType.gui(), x, y, x + 16, y + 16, -2130706433, -2130706433, blitOffset);
-        ci.cancel();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
@@ -130,19 +149,13 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 
     @Inject(method = "renderBackground", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (mouseInfo == null) {
-            mouseInfo = new MouseInfo();
-            renderInfo = new RenderInfo();
-            random = new Random();
-        }
-
         float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        mouseInfo.deltaX = (mouseInfo.oX - mouseX) / deltaTime / 20f;
-        mouseInfo.deltaY = (mouseInfo.oY - mouseY) / deltaTime / 20f;
+        getMouseInfo().deltaX = (mouseInfo.oX - mouseX) / deltaTime / 20f;
+        getMouseInfo().deltaY = (mouseInfo.oY - mouseY) / deltaTime / 20f;
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        mouseInfo.oX = mouseX; mouseInfo.oY = mouseY;
+        getMouseInfo().oX = mouseX; getMouseInfo().oY = mouseY;
     }
 }

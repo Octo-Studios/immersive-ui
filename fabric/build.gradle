@@ -23,7 +23,16 @@ configurations {
 }
 
 repositories {
-
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -33,7 +42,9 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
-    //modImplementation "it.hurts.octostudios.octolib:octolib-fabric:$rootProject.octolib_version"
+    modImplementation "it.hurts.octostudios.octolib:octolib-fabric:$rootProject.octolib_version"
+    //modImplementation "curse.maven:owo-lib-532610:6446006"
+    //modImplementation "curse.maven:alloy-forgery-438718:5611901"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
