@@ -127,16 +127,19 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     }
 
     @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffsetOld, @NotNull CallbackInfo ci) {
+    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
             ci.cancel();
         }
+
+        guiGraphics.fillGradient(RenderType.gui(), x, y, x + 16, y + 16, -2130706433, -2130706433, blitOffset);
+        ci.cancel();
     }
 
-    @ModifyArg(method = "renderSlotHighlight", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(Lnet/minecraft/client/renderer/RenderType;IIIIIII)V"))
-    private static RenderType modify(RenderType renderType) {
-        return RenderType.gui();
-    }
+//    @ModifyArg(method = "renderSlotHighlight", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(Lnet/minecraft/client/renderer/RenderType;IIIIIII)V"))
+//    private static RenderType modify(RenderType renderType) {
+//        return RenderType.gui();
+//    }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
     public void fixHovering(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, int i, int j, int k, Slot slot) {
