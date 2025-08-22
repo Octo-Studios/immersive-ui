@@ -14,8 +14,7 @@ public class FlameUIParticle extends ExtendedUIParticle {
     public FlameUIParticle(float xStart, float yStart, int lifeTime) {
         super(TEXTURE, 1f, lifeTime, xStart, yStart, Layer.SCREEN, 232f);
         Random rand = new Random();
-
-        this.enableBlend(false);
+        ;
         this.getTransform().setSize(new Vector2f(1.25f, 1.25f));
         this.setColors(OctoColor.WHITE);
         this.setGravityDirection(new Vector2f(0, -1));

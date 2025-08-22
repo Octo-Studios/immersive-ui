@@ -39,13 +39,13 @@ public abstract class FloatingItemMixin {
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);
     }
 
-    @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics arg, int i, int j, int k, int color, CallbackInfo ci) {
-        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
-            ci.cancel();
-            return;
-        }
-        arg.fillGradient(RenderType.gui(), i, j, i + 16, j + 16, color, color, k);
-        ci.cancel();
-    }
+//    @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "HEAD"), cancellable = true)
+//    private static void disableSlotHighlight(GuiGraphics arg, int i, int j, int k, int color, CallbackInfo ci) {
+//        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
+//            ci.cancel();
+//            return;
+//        }
+//        arg.fillGradient(RenderType.gui(), i, j, i + 16, j + 16, color, color, k);
+//        ci.cancel();
+//    }
 }

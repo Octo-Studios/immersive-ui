@@ -123,17 +123,22 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
     public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+        guiGraphics.pose().pushMatrix();
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, getExpandingProgress());
     }
 
-    @Inject(method = "renderSlotHighlight", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, @NotNull CallbackInfo ci) {
+    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.AFTER), require = 0)
+    public void renderSizePopMatrix(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+        guiGraphics.pose().popMatrix();
+    }
+
+    @Inject(method = "renderSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
+    private static void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
             ci.cancel();
         }
 
-        guiGraphics.fillGradient(RenderType.gui(), x, y, x + 16, y + 16, -2130706433, -2130706433, blitOffset);
-        ci.cancel();
+        return;
     }
 
 //    @ModifyArg(method = "renderSlotHighlight", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(Lnet/minecraft/client/renderer/RenderType;IIIIIII)V"))
@@ -141,16 +146,16 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 //        return RenderType.gui();
 //    }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void fixHovering(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, int i, int j, int k, Slot slot) {
-        if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
-            this.hoveredSlot = slot;
-        }
-    }
+//    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isActive()Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
+//    public void fixHovering(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+//        if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
+//            this.hoveredSlot = slot;
+//        }
+//    }
 
     @Inject(method = "renderBackground", at = @At("HEAD"))
     public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         getMouseInfo().deltaX = (mouseInfo.oX - mouseX) / deltaTime / 20f;
         getMouseInfo().deltaY = (mouseInfo.oY - mouseY) / deltaTime / 20f;
     }

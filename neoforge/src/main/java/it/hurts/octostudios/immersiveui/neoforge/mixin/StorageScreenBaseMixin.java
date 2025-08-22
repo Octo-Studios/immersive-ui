@@ -10,6 +10,10 @@ import it.hurts.octostudios.octolib.client.particle.ParticleSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.p3pp3rf1y.sophisticatedcore.client.gui.StorageScreenBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
@@ -31,7 +35,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(StorageScreenBase.class)
-public abstract class StorageScreenBaseMixin {
+public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
+    public StorageScreenBaseMixin(AbstractContainerMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+    }
+
     @Shadow protected abstract boolean isHovering(Slot slot, double mouseX, double mouseY);
 
     @Shadow public abstract int getLeftX();
@@ -41,9 +49,6 @@ public abstract class StorageScreenBaseMixin {
     @Shadow private boolean initializing;
     @Unique
     Map<Slot, Float> backpackProgress = new HashMap<>();
-
-    @Unique
-    Slot myHoveredSlot;
 
 //    @Unique
 //    private MouseInfo mouseInfo = new MouseInfo();
@@ -70,44 +75,44 @@ public abstract class StorageScreenBaseMixin {
         MouseInfo mouseInfo = ((ExtraScreenData) this).getMouseInfo();
         mouseInfo.oX = mouseX; mouseInfo.oY = mouseY;
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(getLeftX(), getTopY(), 0);
-        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(getLeftX(), getTopY());
+        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
+        guiGraphics.pose().popMatrix();
     }
 
-    @Inject(require = 0, method = "renderSuper", at = @At("HEAD"))
-    private void renderHead(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        myHoveredSlot = null;
-    }
+//    @Inject(require = 0, method = "renderSuper", at = @At("HEAD"))
+//    private void renderHead(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+//        myHoveredSlot = null;
+//    }
+//
+//    @Inject(require = 0, method = "renderSuper", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
+//    private void hoveredSlot(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, @Local Slot slot) {
+//        if (this.isHovering(slot, mouseX, mouseY)) {
+//            myHoveredSlot = slot;
+//        }
+//    }
 
-    @Inject(require = 0, method = "renderSuper", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
-    private void hoveredSlot(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, @Local Slot slot) {
-        if (this.isHovering(slot, mouseX, mouseY)) {
-            myHoveredSlot = slot;
-        }
-    }
-
-    @Inject(require = 0, method = "renderUpgradeSlots", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
-    private void hoveredSlot2(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci, @Local Slot slot) {
-        if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
-            myHoveredSlot = slot;
-        }
-    }
-
-    @Inject(require = 0, method = "renderStorageInventorySlots(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
-    private void hoveredSlot2(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean canShowHover, CallbackInfo ci, @Local Slot slot) {
-        if (canShowHover && this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
-            myHoveredSlot = slot;
-        }
-    }
+//    @Inject(require = 0, method = "renderUpgradeSlots", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
+//    private void hoveredSlot2(GuiGraphics guiGraphics, int mouseX, int mouseY, CallbackInfo ci, @Local Slot slot) {
+//        if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
+//            myHoveredSlot = slot;
+//        }
+//    }
+//
+//    @Inject(require = 0, method = "renderStorageInventorySlots(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.BEFORE))
+//    private void hoveredSlot2(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean canShowHover, CallbackInfo ci, @Local Slot slot) {
+//        if (canShowHover && this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
+//            myHoveredSlot = slot;
+//        }
+//    }
 
     @Unique
     AtomicBoolean shouldBurstCompat = new AtomicBoolean(false);
 
     @Inject(require = 0, method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderStack(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/world/item/ItemStack;ZLjava/lang/String;)V", shift = At.Shift.BEFORE))
     private void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        CommonCode.floatingRenderSize(guiGraphics, slot, myHoveredSlot, backpackProgress);
+        CommonCode.floatingRenderSize(guiGraphics, slot, this.hoveredSlot, backpackProgress);
 
         StorageScreenBase screen = (StorageScreenBase) (Object) this;
         Optional<UpgradeContainerBase<?, ?>> upgrade = ((StorageContainerMenuBase<?>)screen.getMenu()).getSlotUpgradeContainer(slot);

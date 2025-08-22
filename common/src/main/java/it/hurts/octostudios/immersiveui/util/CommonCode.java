@@ -60,7 +60,7 @@ public class CommonCode {
 
     public static void renderFloating(Screen screen, GuiGraphics guiGraphics, MouseInfo mouseInfo, int i, int j, ItemStack itemStack, Random random, RenderInfo renderInfo, String string, CallbackInfo ci) {
         float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (mouseInfo.oX != Integer.MIN_VALUE && mouseInfo.oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
@@ -85,10 +85,10 @@ public class CommonCode {
 //        guiGraphics.drawString(Minecraft.getInstance().font, itemStack.getHoverName().toString(), 2, 11, 0xffffff, true);
 //        guiGraphics.pose().popPose();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(i + 8, j + 8, 300.0f);
-        guiGraphics.pose().scale(scale, scale, 1f);
-        if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().mulPose(Axis.ZP.rotation(Mth.abs(renderInfo.currentAngle) > 0.01f ? renderInfo.currentAngle : 0f));
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(i + 8, j + 8);
+        guiGraphics.pose().scale(scale, scale);
+        if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().rotate(Mth.abs(renderInfo.currentAngle) > 0.01f ? renderInfo.currentAngle : 0f);
         guiGraphics.renderItem(itemStack, -8, -8);
 
         if (ImmersiveUI.CONFIG.isEnableRarityParticles()) {
@@ -120,7 +120,7 @@ public class CommonCode {
         Font font = Minecraft.getInstance().font;
         guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         ci.cancel();
     }
@@ -135,9 +135,9 @@ public class CommonCode {
 
         if (timer.get() > 0) {
             Random rand = new Random();
-            timer.set(Mth.clamp(timer.get()-Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer()));
+            timer.set(Mth.clamp(timer.get()-Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer()));
             Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
-            guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), 0);
+            guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()));
         }
     }
 
@@ -149,11 +149,11 @@ public class CommonCode {
 
         ItemStack carried = player.containerMenu.getCarried();
         if (!carried.isEmpty() && ItemStack.isSameItemSameComponents(slot.getItem(), carried) && ImmersiveUI.CONFIG.isEnableMatchingItemHovering()) {
-            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), 0);
+            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude());
         }
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
-        float deltaTime = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() / 4f;
+        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() / 4f;
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
@@ -161,8 +161,8 @@ public class CommonCode {
         //if (!hovering) return;
 
 
-        guiGraphics.pose().translate(slot.x + 8, slot.y + 8, 0);
-        guiGraphics.pose().scale(progress, progress, 1f);
-        guiGraphics.pose().translate(-slot.x - 8, -slot.y - 8, 0);
+        guiGraphics.pose().translate(slot.x + 8, slot.y + 8);
+        guiGraphics.pose().scale(progress, progress);
+        guiGraphics.pose().translate(-slot.x - 8, -slot.y - 8);
     }
 }

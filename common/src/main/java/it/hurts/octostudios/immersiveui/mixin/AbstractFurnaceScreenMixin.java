@@ -19,8 +19,8 @@ public class AbstractFurnaceScreenMixin {
     @Unique
     public AtomicBoolean shouldBurst = new AtomicBoolean(false);
 
-    @Inject(method = "render", at = @At("HEAD"))
-    public void render(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "renderBg", at = @At("TAIL"))
+    public void render(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY, CallbackInfo ci) {
         AbstractFurnaceScreen<?> screen = ((AbstractFurnaceScreen<?>) (Object) this);
         AbstractFurnaceMenu menu = screen.getMenu();
 
