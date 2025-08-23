@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3x2f;
 import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -87,6 +88,7 @@ public class CommonCode {
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(i + 8, j + 8);
+        Matrix3x2f matrix = new Matrix3x2f(guiGraphics.pose());
         guiGraphics.pose().scale(scale, scale);
         if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().rotate(Mth.abs(renderInfo.currentAngle) > 0.01f ? renderInfo.currentAngle : 0f);
         guiGraphics.renderItem(itemStack, -8, -8);
@@ -102,8 +104,8 @@ public class CommonCode {
                     UIParticle particle = new RarityUIParticle(
                             random.nextFloat(0.5f, 0.625f)*direction.length(),
                             random.nextInt(12, 20),
-                            i+8+random.nextFloat(-4,4),
-                            j+8+random.nextFloat(-4,4),
+                            random.nextFloat(-4,4),
+                            random.nextFloat(-4,4),
                             -direction.x,
                             -direction.y,
                             random.nextFloat(-10, 10),
@@ -111,6 +113,7 @@ public class CommonCode {
                             UIParticle.Layer.SCREEN,
                             233f
                     );
+                    particle.setMatrix(matrix);
                     particle.setScreen(screen);
                     particle.instantiate();
                 }

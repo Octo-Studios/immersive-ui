@@ -5,6 +5,7 @@ import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
 import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
 import it.hurts.octostudios.octolib.client.particle.GalacticUIParticle;
+import it.hurts.octostudios.octolib.client.particle.ParticleSystem;
 import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
