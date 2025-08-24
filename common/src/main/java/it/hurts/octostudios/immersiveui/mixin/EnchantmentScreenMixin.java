@@ -13,6 +13,7 @@ import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.inventory.Slot;
 import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,8 +27,12 @@ public class EnchantmentScreenMixin {
         AbstractContainerScreen<EnchantmentMenu> screen = ((AbstractContainerScreen<EnchantmentMenu>) (Object) this);
         Slot slot = screen.getMenu().slots.getFirst();
 
+        AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) this;
+        int leftPos = accessor.getLeftPos();
+        int topPos = accessor.getTopPos();
+
         for (int ii = 0; ii < 8; ii++) {
-            ExtendedUIParticle particleData = new GalacticUIParticle(3f, 52+ii, slot.x+8, slot.y+8, UIParticle.Layer.SCREEN, 200);
+            ExtendedUIParticle particleData = new GalacticUIParticle(3f, 52+ii, leftPos+slot.x+8, topPos+slot.y+8, UIParticle.Layer.SCREEN, 200);
             particleData.setDirection(VectorUtils.rotate(new Vector2f(0, 1), ii*45f));
             particleData.getTransform().setSize(new Vector2f(0.75f, 0.75f));
             particleData.setSpeed(2f);
@@ -37,7 +42,7 @@ public class EnchantmentScreenMixin {
             particleData.setFriction(0);
             particleData.instantiate();
 
-            particleData = new GalacticUIParticle(3f, 40+ii, slot.x+8, slot.y+8, UIParticle.Layer.SCREEN, 200);
+            particleData = new GalacticUIParticle(3f, 40+ii, leftPos+slot.x+8, topPos+slot.y+8, UIParticle.Layer.SCREEN, 200);
             particleData.setDirection(VectorUtils.rotate(new Vector2f(0, 1), ii*45f));
             particleData.setSpeed(0.75f);
             particleData.setAngularVelocity(0);

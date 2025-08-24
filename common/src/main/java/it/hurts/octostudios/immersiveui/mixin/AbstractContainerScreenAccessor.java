@@ -11,4 +11,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AbstractContainerScreenAccessor {
     @Accessor
     Slot getHoveredSlot();
+
+    @Accessor("leftPos")
+    int getLeftPos();
+
+    @Accessor("topPos")
+    int getTopPos();
 }

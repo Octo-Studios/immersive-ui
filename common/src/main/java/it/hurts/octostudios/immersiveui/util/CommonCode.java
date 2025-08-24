@@ -7,6 +7,7 @@ import it.hurts.octostudios.immersiveui.client.RenderInfo;
 import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.client.particle.FlameUIParticle;
 import it.hurts.octostudios.immersiveui.client.particle.RarityUIParticle;
+import it.hurts.octostudios.immersiveui.mixin.AbstractContainerScreenAccessor;
 import it.hurts.octostudios.octolib.client.particle.UIParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -47,8 +48,12 @@ public class CommonCode {
         if (burstCondition && !shouldBurst.get()) {
             shouldBurst.set(true);
 
+            AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
+            int leftPos = accessor.getLeftPos();
+            int topPos = accessor.getTopPos();
+
             for (int ii = 0; ii < 8; ii++) {
-                FlameUIParticle particle = new FlameUIParticle(fuelSlot.x+8+random.nextInt(-6,6), fuelSlot.y+10+random.nextInt(-6,6), random.nextInt(16,24));
+                FlameUIParticle particle = new FlameUIParticle(leftPos+fuelSlot.x+8+random.nextInt(-6,6), topPos+fuelSlot.y+10+random.nextInt(-6,6), random.nextInt(16,24));
                 particle.setScreen(screen);
                 particle.instantiate();
             }
