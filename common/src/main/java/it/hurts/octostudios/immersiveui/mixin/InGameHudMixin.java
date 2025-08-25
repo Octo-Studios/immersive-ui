@@ -1,6 +1,8 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
+import it.hurts.octostudios.octolib.OctoLib;
+import it.hurts.octostudios.octolib.OctoLibClient;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -54,7 +56,7 @@ public abstract class InGameHudMixin {
         assert playerEntity != null;
         int selectedSlot = playerEntity.getInventory().getSelectedSlot();
 
-        double toMove = Math.abs(selectedSlot - position) / 2f * client.getDeltaTracker().getRealtimeDeltaTicks() * speed;
+        double toMove = Math.abs(selectedSlot - position) / 2f * OctoLibClient.getDeltaTime() * speed * 20f;
 
         if (position > selectedSlot) {
             position = Mth.clamp(position - toMove, selectedSlot, position);

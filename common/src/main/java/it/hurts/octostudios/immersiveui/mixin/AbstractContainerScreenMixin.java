@@ -5,24 +5,20 @@ import it.hurts.octostudios.immersiveui.client.MouseInfo;
 import it.hurts.octostudios.immersiveui.client.RenderInfo;
 import it.hurts.octostudios.immersiveui.compat.ExtraScreenData;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
+import it.hurts.octostudios.octolib.OctoLibClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,15 +33,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     @Shadow
     @Nullable
     protected Slot hoveredSlot;
-    @Shadow private ItemStack draggingItem;
-
-    @Shadow protected abstract boolean isHovering(Slot slot, double d, double e);
-
-    @Shadow protected int leftPos;
-    @Shadow protected int topPos;
-    @Unique
-    private float immersiveui$ticker;
-
 
     @Unique
     private MouseInfo mouseInfo = new MouseInfo();
@@ -54,9 +41,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 
     @Unique
     AtomicReference<Float> timerCommon = new AtomicReference<>(0f);
-//    @Unique
-//    AtomicBoolean shakeScreenCommon = new AtomicBoolean(false);
-
 
     @Override
     public MouseInfo getMouseInfo() {
@@ -118,7 +102,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 //        }
 
         CommonCode.renderFloating((Screen) (Object) this, guiGraphics, getMouseInfo(), i, j, itemStack, getRandom(), getRenderInfo(), string, ci);
-        getMouseInfo().oX = i; getMouseInfo().oY = j;
     }
 
     @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
@@ -153,15 +136,16 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 //        }
 //    }
 
-    @Inject(method = "renderBackground", at = @At("HEAD"))
-    public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
-        getMouseInfo().deltaX = (mouseInfo.oX - mouseX) / deltaTime / 20f;
-        getMouseInfo().deltaY = (mouseInfo.oY - mouseY) / deltaTime / 20f;
-    }
-
-    @Inject(method = "render", at = @At("RETURN"))
-    public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        getMouseInfo().oX = mouseX; getMouseInfo().oY = mouseY;
-    }
+//    @Inject(method = "renderBackground", at = @At("HEAD"))
+//    public void resetOldMouse(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+//        double deltaTime = OctoLibClient.getDeltaTime() * 100f;
+//        getMouseInfo().deltaX = (float) ((mouseInfo.oX - mouseX) / deltaTime);
+//        getMouseInfo().deltaY = (float) ((mouseInfo.oY - mouseY) / deltaTime);
+//        getMouseInfo().oX = mouseX; getMouseInfo().oY = mouseY;
+//    }
+//
+//    @Inject(method = "render", at = @At("RETURN"))
+//    public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+//        getMouseInfo().oX = mouseX; getMouseInfo().oY = mouseY;
+//    }
 }

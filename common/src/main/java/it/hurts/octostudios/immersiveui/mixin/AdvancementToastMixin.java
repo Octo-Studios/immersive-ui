@@ -27,9 +27,9 @@ public class AdvancementToastMixin {
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(16,16);
-        guiGraphics.pose().rotate(Mth.sin((delta)*0.05f)*0.15f);
+        //guiGraphics.pose().rotate(Mth.sin((delta)*0.05f)*0.15f);
         guiGraphics.pose().rotate(Mth.cos((delta)*0.1f)*0.2f);
-        guiGraphics.pose().rotate(Mth.cos((delta)*0.075f)*0.3f);
+        //guiGraphics.pose().rotate(Mth.cos((delta)*0.075f)*0.3f);
         guiGraphics.pose().translate(0, Mth.sin(delta*0.1f));
         guiGraphics.pose().translate(-16,-16);
     }

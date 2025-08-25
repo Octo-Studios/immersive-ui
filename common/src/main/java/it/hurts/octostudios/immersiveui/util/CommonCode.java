@@ -8,7 +8,11 @@ import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.client.particle.FlameUIParticle;
 import it.hurts.octostudios.immersiveui.client.particle.RarityUIParticle;
 import it.hurts.octostudios.immersiveui.mixin.AbstractContainerScreenAccessor;
+import it.hurts.octostudios.octolib.OctoLibClient;
+import it.hurts.octostudios.octolib.client.animation.easing.EaseType;
+import it.hurts.octostudios.octolib.client.animation.easing.TransitionType;
 import it.hurts.octostudios.octolib.client.particle.UIParticle;
+import it.hurts.octostudios.octolib.util.AnimationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -66,7 +70,7 @@ public class CommonCode {
 
     public static void renderFloating(Screen screen, GuiGraphics guiGraphics, MouseInfo mouseInfo, int i, int j, ItemStack itemStack, Random random, RenderInfo renderInfo, String string, CallbackInfo ci) {
         float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
-        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks();
+        float deltaTime = (float) OctoLibClient.getDeltaTime()*20;
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (mouseInfo.oX != Integer.MIN_VALUE && mouseInfo.oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
@@ -143,7 +147,7 @@ public class CommonCode {
 
         if (timer.get() > 0) {
             Random rand = new Random();
-            timer.set(Mth.clamp(timer.get()-Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks(), 0, ImmersiveUI.CONFIG.getShakeTimer()));
+            timer.set((float) Mth.clamp(timer.get()-OctoLibClient.getDeltaTime()*20f, 0, ImmersiveUI.CONFIG.getShakeTimer()));
             Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
             guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()));
         }
@@ -161,16 +165,27 @@ public class CommonCode {
         }
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
-        float deltaTime = Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks() / 4f;
+        float deltaTime = (float) (OctoLibClient.getDeltaTime() * 4f);
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
-        float progress = Easing.lerp(1F, ImmersiveUI.CONFIG.getHoveredItemScale(), Easing.animate(hovering ? Easing.Type.EASE_OUT : Easing.Type.EASE_IN, expandingProgress.get(slot)));
-        //if (!hovering) return;
-
+        float p = expandingProgress.get(slot);
+        float progress = AnimationUtils.lerp(1f, ImmersiveUI.CONFIG.getHoveredItemScale(), TransitionType.QUAD.apply(EaseType.EASE_OUT, p));
 
         guiGraphics.pose().translate(slot.x + 8, slot.y + 8);
         guiGraphics.pose().scale(progress, progress);
         guiGraphics.pose().translate(-slot.x - 8, -slot.y - 8);
     }
+
+    public static void computeMouseDelta(MouseInfo mouseInfo, int mouseX, int mouseY) {
+        double deltaTime = OctoLibClient.getDeltaTime() * 100f;
+        mouseInfo.deltaX = (float) ((mouseInfo.oX - mouseX) / deltaTime);
+        mouseInfo.deltaY = (float) ((mouseInfo.oY - mouseY) / deltaTime);
+        mouseInfo.oX = mouseX;
+        mouseInfo.oY = mouseY;
+    }
+
+//    public static void resetOldMousePosition(MouseInfo mouseInfo, int mouseX, int mouseY) {
+//
+//    }
 }

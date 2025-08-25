@@ -12,6 +12,7 @@
     "AnvilMenuMixin",
     "EnchantmentMixin",
     "EnchantmentScreenMixin",
+    "GameRendererMixin",
     "GooeyMixin",
     "InGameHudMixin",
     "ItemStackMixin",
