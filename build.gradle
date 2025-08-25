@@ -2,6 +2,7 @@ plugins {
     id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
+    id("io.freefair.lombok") version "8.14.2" apply false
 }
 
 architectury {
@@ -24,6 +25,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'
     apply plugin: 'maven-publish'
+    apply plugin: 'io.freefair.lombok'
 
     base {
         archivesName = "$rootProject.mod_name" + "-" + "$project.name".toUpperCase()
@@ -51,12 +53,6 @@ subprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-1.21.8:2025.07.20@zip")
         }
-
-        compileOnly 'org.projectlombok:lombok:1.18.32'
-        annotationProcessor 'org.projectlombok:lombok:1.18.32'
-
-        testCompileOnly 'org.projectlombok:lombok:1.18.32'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
         implementation 'org.jetbrains:annotations:20.1.0'
 
