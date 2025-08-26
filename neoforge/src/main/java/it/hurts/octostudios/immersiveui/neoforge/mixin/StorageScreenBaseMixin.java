@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.p3pp3rf1y.sophisticatedcore.client.gui.StorageScreenBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
@@ -70,17 +71,6 @@ public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
         CommonCode.shakeScreen(guiGraphics, (Screen) (Object) this, timer, 2f);
     }
 
-    @Inject(require = 0, method = "render", at = @At("TAIL"))
-    public void resetOldMouse2(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        MouseInfo mouseInfo = ((ExtraScreenData) this).getMouseInfo();
-        mouseInfo.oX = mouseX; mouseInfo.oY = mouseY;
-
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(getLeftX(), getTopY());
-        ParticleSystem.renderScreenParticles((Screen) (Object) this, guiGraphics, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
-        guiGraphics.pose().popMatrix();
-    }
-
 //    @Inject(require = 0, method = "renderSuper", at = @At("HEAD"))
 //    private void renderHead(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
 //        myHoveredSlot = null;
@@ -112,6 +102,7 @@ public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
 
     @Inject(require = 0, method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderStack(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/world/item/ItemStack;ZLjava/lang/String;)V", shift = At.Shift.BEFORE))
     private void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+        guiGraphics.pose().pushMatrix();
         CommonCode.floatingRenderSize(guiGraphics, slot, this.hoveredSlot, backpackProgress);
 
         StorageScreenBase screen = (StorageScreenBase) (Object) this;
@@ -125,5 +116,10 @@ public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
             float litProgress = (float) (logic.getBurnTimeFinish()-Minecraft.getInstance().level.getGameTime()) / logic.getBurnTimeTotal();
             CommonCode.renderFurnaceParticles(screen, slot, litProgress == 0, logic.isCooking(), shouldBurstCompat);
         }
+    }
+
+    @Inject(require = 0, method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/ISlotDecorationRenderer;renderDecoration(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.AFTER))
+    public void renderSizeEnd(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+        guiGraphics.pose().popMatrix();
     }
 }

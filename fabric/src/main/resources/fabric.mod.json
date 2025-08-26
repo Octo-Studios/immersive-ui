@@ -22,9 +22,9 @@
     "${mod_id}-common.mixins.json"
   ],
   "depends": {
-    "minecraft": "~1.21",
+    "minecraft": ">=1.21.8",
     "java": ">=21",
-    "octolib": ">=0.6.0.3",
+    "octolib": ">=0.6.0.4",
     "fabric-api": "*"
   }
 }
