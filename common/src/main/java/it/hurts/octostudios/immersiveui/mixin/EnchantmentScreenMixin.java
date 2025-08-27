@@ -32,7 +32,7 @@ public class EnchantmentScreenMixin {
         int topPos = accessor.getTopPos();
 
         for (int ii = 0; ii < 8; ii++) {
-            ExtendedUIParticle particleData = new GalacticUIParticle(3f, 52+ii, leftPos+slot.x+8, topPos+slot.y+8, UIParticle.Layer.SCREEN, 200);
+            ExtendedUIParticle particleData = new GalacticUIParticle(3f, 36+ii, leftPos+slot.x+8, topPos+slot.y+8, UIParticle.Layer.SCREEN, 200);
             particleData.setDirection(VectorUtils.rotate(new Vector2f(0, 1), ii*45f));
             particleData.getTransform().setSize(new Vector2f(0.75f, 0.75f));
             particleData.setSpeed(2f);
