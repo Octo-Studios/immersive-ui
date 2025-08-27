@@ -104,17 +104,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
         CommonCode.renderFloating((Screen) (Object) this, guiGraphics, getMouseInfo(), i, j, itemStack, getRandom(), getRenderInfo(), string, ci);
     }
 
-    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE), require = 0)
-    public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        guiGraphics.pose().pushMatrix();
-        CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, getExpandingProgress());
-    }
-
-    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.AFTER), require = 0)
-    public void renderSizePopMatrix(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        guiGraphics.pose().popMatrix();
-    }
-
     @Inject(method = "renderSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
     private static void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {

@@ -1,6 +1,7 @@
 package it.hurts.octostudios.immersiveui.neoforge.mixin;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
+import it.hurts.octostudios.immersiveui.compat.ExtraScreenData;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
 import it.hurts.octostudios.immersiveui.util.Easing;
 import net.minecraft.client.Camera;
@@ -25,33 +26,18 @@ import java.util.*;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class FloatingItemMixin {
-    @Unique
-    Map<Slot, Float> expandingProgress = new HashMap<>();
-
     @Shadow
     @Nullable
     protected Slot hoveredSlot;
 
-
-
-    @Inject(method = "renderSlotContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/item/ItemStack;III)V", shift = At.Shift.BEFORE))
-    public void renderSize(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, String countString, CallbackInfo ci) {
+    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotContents(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/inventory/Slot;Ljava/lang/String;)V", shift = At.Shift.BEFORE))
+    public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
         guiGraphics.pose().pushMatrix();
-        CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, expandingProgress);
+        CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, ((ExtraScreenData) this).getExpandingProgress());
     }
 
-    @Inject(method = "renderSlotContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.AFTER))
-    public void renderSizeEnd(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, String countString, CallbackInfo ci) {
+    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotContents(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/inventory/Slot;Ljava/lang/String;)V", shift = At.Shift.AFTER))
+    public void renderSizeEnd(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
         guiGraphics.pose().popMatrix();
     }
-
-//    @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "HEAD"), cancellable = true)
-//    private static void disableSlotHighlight(GuiGraphics arg, int i, int j, int k, int color, CallbackInfo ci) {
-//        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
-//            ci.cancel();
-//            return;
-//        }
-//        arg.fillGradient(RenderType.gui(), i, j, i + 16, j + 16, color, color, k);
-//        ci.cancel();
-//    }
 }

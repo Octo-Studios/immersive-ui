@@ -42,7 +42,7 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
-    //modImplementation "it.hurts.octostudios.octolib:octolib-fabric:$rootProject.octolib_version"
+    modImplementation "it.hurts.octostudios.octolib:octolib-fabric:$rootProject.octolib_version"
     //modImplementation "curse.maven:owo-lib-532610:6446006"
     //modImplementation "curse.maven:alloy-forgery-438718:5611901"
 
