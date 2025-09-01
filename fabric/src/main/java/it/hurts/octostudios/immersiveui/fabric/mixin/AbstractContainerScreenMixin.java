@@ -18,13 +18,13 @@ public class AbstractContainerScreenMixin {
     @Nullable
     protected Slot hoveredSlot;
 
-    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isFake()Z", shift = At.Shift.BEFORE), require = 0)
+    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;isFake()Z", shift = At.Shift.BEFORE))
     public void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
         guiGraphics.pose().pushMatrix();
         CommonCode.floatingRenderSize(guiGraphics, slot, hoveredSlot, ((ExtraScreenData) this).getExpandingProgress());
     }
 
-    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.AFTER), require = 0)
+    @Inject(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", shift = At.Shift.AFTER))
     public void renderSizePopMatrix(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
         guiGraphics.pose().popMatrix();
     }
