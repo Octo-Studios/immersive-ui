@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "it.hurts.octostudios.immersiveui.fabric.mixin",
+  "package": "it.hurts.shatterbyte.immersiveui.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
