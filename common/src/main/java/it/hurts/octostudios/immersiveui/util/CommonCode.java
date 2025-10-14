@@ -1,6 +1,5 @@
 package it.hurts.octostudios.immersiveui.util;
 
-import com.mojang.math.Axis;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.client.MouseInfo;
 import it.hurts.octostudios.immersiveui.client.RenderInfo;
@@ -8,17 +7,16 @@ import it.hurts.octostudios.immersiveui.client.VariableStorage;
 import it.hurts.octostudios.immersiveui.client.particle.FlameUIParticle;
 import it.hurts.octostudios.immersiveui.client.particle.RarityUIParticle;
 import it.hurts.octostudios.immersiveui.mixin.AbstractContainerScreenAccessor;
-import it.hurts.octostudios.octolib.OctoLibClient;
-import it.hurts.octostudios.octolib.client.animation.easing.EaseType;
-import it.hurts.octostudios.octolib.client.animation.easing.TransitionType;
-import it.hurts.octostudios.octolib.client.particle.UIParticle;
-import it.hurts.octostudios.octolib.util.AnimationUtils;
+import it.hurts.shatterbyte.shatterlib.ShatterLibClient;
+import it.hurts.shatterbyte.shatterlib.client.animation.easing.EaseType;
+import it.hurts.shatterbyte.shatterlib.client.animation.easing.TransitionType;
+import it.hurts.shatterbyte.shatterlib.client.particle.UIParticle;
+import it.hurts.shatterbyte.shatterlib.util.AnimationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +30,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import static it.hurts.octostudios.immersiveui.client.VariableStorage.*;
 
@@ -70,7 +67,7 @@ public class CommonCode {
 
     public static void renderFloating(Screen screen, GuiGraphics guiGraphics, MouseInfo mouseInfo, int i, int j, ItemStack itemStack, Random random, RenderInfo renderInfo, String string, CallbackInfo ci) {
         float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
-        float deltaTime = (float) OctoLibClient.getDeltaTime()*20;
+        float deltaTime = (float) ShatterLibClient.getDeltaTime()*20;
         float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
 
         if (mouseInfo.oX != Integer.MIN_VALUE && mouseInfo.oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
@@ -147,7 +144,7 @@ public class CommonCode {
 
         if (timer.get() > 0) {
             Random rand = new Random();
-            timer.set((float) Mth.clamp(timer.get()-OctoLibClient.getDeltaTime()*20f, 0, ImmersiveUI.CONFIG.getShakeTimer()));
+            timer.set((float) Mth.clamp(timer.get()-ShatterLibClient.getDeltaTime()*20f, 0, ImmersiveUI.CONFIG.getShakeTimer()));
             Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
             guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()));
         }
@@ -165,7 +162,7 @@ public class CommonCode {
         }
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
-        float deltaTime = (float) (OctoLibClient.getDeltaTime() * 4f);
+        float deltaTime = (float) (ShatterLibClient.getDeltaTime() * 4f);
 
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
@@ -178,7 +175,7 @@ public class CommonCode {
     }
 
     public static void computeMouseDelta(MouseInfo mouseInfo, int mouseX, int mouseY) {
-        double deltaTime = OctoLibClient.getDeltaTime() * 100f;
+        double deltaTime = ShatterLibClient.getDeltaTime() * 100f;
         mouseInfo.deltaX = (float) ((mouseInfo.oX - mouseX) / deltaTime);
         mouseInfo.deltaY = (float) ((mouseInfo.oY - mouseY) / deltaTime);
         mouseInfo.oX = mouseX;

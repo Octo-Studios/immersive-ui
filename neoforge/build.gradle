@@ -44,7 +44,7 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
-    implementation "it.hurts.octostudios.octolib:octolib-neoforge:$rootProject.octolib_version"
+    implementation "it.hurts.shatterbyte.shatterlib:shatterlib-neoforge:$rootProject.shatterlib_version"
     implementation "curse.maven:sophisticated-core-618298:6896770"
     implementation "curse.maven:sophisticated-backpacks-422301:6907915"
     implementation "curse.maven:sophisticated-storage-619320:6912279"

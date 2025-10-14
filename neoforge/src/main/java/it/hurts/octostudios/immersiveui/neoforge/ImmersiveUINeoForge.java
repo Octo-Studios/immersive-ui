@@ -4,7 +4,7 @@ import dev.architectury.platform.Platform;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 import it.hurts.octostudios.immersiveui.compat.SophisticatedCompat;
 import it.hurts.octostudios.immersiveui.compat.SophisticatedProxy;
-import it.hurts.octostudios.octolib.module.config.ConfigManager;
+import it.hurts.shatterbyte.shatterlib.module.config.ConfigManager;
 import lombok.SneakyThrows;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;

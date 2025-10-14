@@ -1,11 +1,11 @@
 package it.hurts.octostudios.immersiveui;
 
-import it.hurts.octostudios.octolib.module.config.annotation.Prop;
-import it.hurts.octostudios.octolib.module.config.impl.OctoConfig;
+import it.hurts.shatterbyte.shatterlib.module.config.annotation.Prop;
+import it.hurts.shatterbyte.shatterlib.module.config.impl.ShatterConfig;
 import lombok.Data;
 
 @Data
-public class Config implements OctoConfig {
+public class Config implements ShatterConfig {
     @Prop(comment = "Enables the hotbar selector animation.")
     private boolean enableHotbarSelectorAnimation = true;
 

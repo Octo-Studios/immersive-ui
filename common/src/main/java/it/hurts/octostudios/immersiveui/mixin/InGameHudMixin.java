@@ -1,21 +1,16 @@
 package it.hurts.octostudios.immersiveui.mixin;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.octolib.OctoLib;
-import it.hurts.octostudios.octolib.OctoLibClient;
-import net.minecraft.client.DeltaTracker;
+import it.hurts.shatterbyte.shatterlib.ShatterLibClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Gui.class, priority = -1)
 public abstract class InGameHudMixin {
@@ -56,7 +51,7 @@ public abstract class InGameHudMixin {
         assert playerEntity != null;
         int selectedSlot = playerEntity.getInventory().getSelectedSlot();
 
-        double toMove = Math.abs(selectedSlot - position) / 2f * OctoLibClient.getDeltaTime() * speed * 20f;
+        double toMove = Math.abs(selectedSlot - position) / 2f * ShatterLibClient.getDeltaTime() * speed * 20f;
 
         if (position > selectedSlot) {
             position = Mth.clamp(position - toMove, selectedSlot, position);

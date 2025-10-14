@@ -15,5 +15,5 @@ dependencies {
 
     modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 
-    modImplementation "it.hurts.octostudios.octolib:octolib-common:$rootProject.octolib_version"
+    modImplementation "it.hurts.shatterbyte.shatterlib:shatterlib-common:$rootProject.shatterlib_version"
 }

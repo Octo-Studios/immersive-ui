@@ -5,7 +5,6 @@ import it.hurts.octostudios.immersiveui.client.MouseInfo;
 import it.hurts.octostudios.immersiveui.client.RenderInfo;
 import it.hurts.octostudios.immersiveui.compat.ExtraScreenData;
 import it.hurts.octostudios.immersiveui.util.CommonCode;
-import it.hurts.octostudios.octolib.OctoLibClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;

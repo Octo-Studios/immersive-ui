@@ -1,8 +1,8 @@
 package it.hurts.octostudios.immersiveui.client.particle;
 
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
-import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
-import it.hurts.octostudios.octolib.util.OctoColor;
+import it.hurts.shatterbyte.shatterlib.client.particle.ExtendedUIParticle;
+import it.hurts.shatterbyte.shatterlib.util.ShatterColor;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2f;
 
@@ -14,9 +14,9 @@ public class FlameUIParticle extends ExtendedUIParticle {
     public FlameUIParticle(float xStart, float yStart, int lifeTime) {
         super(TEXTURE, 1f, lifeTime, xStart, yStart, Layer.SCREEN, 232f);
         Random rand = new Random();
-        ;
+
         this.getTransform().setSize(new Vector2f(1.25f, 1.25f));
-        this.setColors(OctoColor.WHITE);
+        this.setColors(ShatterColor.WHITE);
         this.setGravityDirection(new Vector2f(0, -1));
         this.setGravity(0.2f);
         this.setDirection(VectorUtils.rotate(new Vector2f(0, -1), (rand.nextFloat()-0.5f)*60f));

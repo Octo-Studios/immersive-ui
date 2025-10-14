@@ -19,20 +19,20 @@ config = "${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.8,)"
+versionRange = "[21.9,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.8,)"
+versionRange = "[1.21.9,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.${mod_id}]]
-modId = "octolib"
+modId = "shatterlib"
 type = "required"
-versionRange = "[0.6.0.4,)"
+versionRange = "[0.6.0.5,)"
 ordering = "NONE"
 side = "CLIENT"

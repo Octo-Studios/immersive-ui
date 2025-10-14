@@ -3,12 +3,12 @@ package it.hurts.octostudios.immersiveui.mixin;
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
 
 import it.hurts.octostudios.immersiveui.util.VectorUtils;
-import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
-import it.hurts.octostudios.octolib.client.particle.GalacticUIParticle;
-import it.hurts.octostudios.octolib.client.particle.ParticleSystem;
-import it.hurts.octostudios.octolib.client.particle.UIParticle;
+import it.hurts.shatterbyte.shatterlib.client.particle.ExtendedUIParticle;
+import it.hurts.shatterbyte.shatterlib.client.particle.GalacticUIParticle;
+import it.hurts.shatterbyte.shatterlib.client.particle.UIParticle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.inventory.Slot;
 import org.joml.Vector2f;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EnchantmentScreen.class)
 public class EnchantmentScreenMixin {
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleInventoryButtonClick(II)V"))
-    public void onMouseClicked(double d, double e, int i, CallbackInfoReturnable<Boolean> ci) {
+    public void onMouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
         if (!ImmersiveUI.CONFIG.isEnableEnchantParticles()) return;
 
         AbstractContainerScreen<EnchantmentMenu> screen = ((AbstractContainerScreen<EnchantmentMenu>) (Object) this);

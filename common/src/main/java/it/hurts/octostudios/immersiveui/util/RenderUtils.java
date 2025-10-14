@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -50,11 +51,11 @@ public class RenderUtils {
     public static final ResourceLocation ILLAGER_ALT_FONT = ResourceLocation.withDefaultNamespace("illageralt");
 
     public static MutableComponent illageriate(MutableComponent input, double percentage, long seed) {
-        return stylize(input, percentage, Style.EMPTY.withFont(ILLAGER_ALT_FONT), seed);
+        return stylize(input, percentage, Style.EMPTY.withFont(new FontDescription.Resource(ILLAGER_ALT_FONT)), seed);
     }
 
     public static MutableComponent galactizate(MutableComponent input, double percentage, long seed) {
-        return stylize(input, percentage, Style.EMPTY.withFont(ALT_FONT), seed);
+        return stylize(input, percentage, Style.EMPTY.withFont(new FontDescription.Resource(ALT_FONT)), seed);
     }
 
     public static MutableComponent obfuscate(MutableComponent input, double percentage, long seed) {

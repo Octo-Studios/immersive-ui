@@ -1,9 +1,9 @@
 package it.hurts.octostudios.immersiveui.client.particle;
 
 import it.hurts.octostudios.immersiveui.ImmersiveUI;
-import it.hurts.octostudios.octolib.client.particle.ExtendedUIParticle;
-import it.hurts.octostudios.octolib.client.particle.UIParticle;
-import it.hurts.octostudios.octolib.util.OctoColor;
+import it.hurts.shatterbyte.shatterlib.client.particle.ExtendedUIParticle;
+import it.hurts.shatterbyte.shatterlib.client.particle.UIParticle;
+import it.hurts.shatterbyte.shatterlib.util.ShatterColor;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2f;
 
@@ -15,7 +15,7 @@ public class RarityUIParticle extends ExtendedUIParticle {
         this.setRenderPipeline(UIParticle.ADDITIVE_PIPELINE);
         this.setDirection(xDir, yDir);
         this.setRollVelocity(roll);
-        this.setColors(new OctoColor(0xff000000+rarityColor), new OctoColor(rarityColor));
+        this.setColors(new ShatterColor(0xff000000+rarityColor), new ShatterColor(rarityColor));
     }
 
     @Override
