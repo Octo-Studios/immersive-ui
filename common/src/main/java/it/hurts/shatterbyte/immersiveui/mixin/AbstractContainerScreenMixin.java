@@ -103,12 +103,10 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     }
 
     @Inject(method = "renderSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
-    private static void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (!ImmersiveUI.CONFIG.isEnableVanillaSlotHighlighting()) {
+    private void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
+        if (ImmersiveUI.CONFIG.isDisableVanillaSlotHighlighting()) {
             ci.cancel();
         }
-
-        return;
     }
 
 //    @ModifyArg(method = "renderSlotHighlight", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(Lnet/minecraft/client/renderer/RenderType;IIIIIII)V"))
