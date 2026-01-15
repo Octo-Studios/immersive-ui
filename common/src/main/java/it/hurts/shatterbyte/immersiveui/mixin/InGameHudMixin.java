@@ -39,7 +39,7 @@ public abstract class InGameHudMixin {
 //        //guiGraphics.pose().popMatrix();
 //    }
 
-    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1), index = 2, method = "renderItemHotbar")
+    @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1), index = 2, method = "renderItemHotbar")
     private int selectedSlotPositionX(int originalX) {
         if (!ImmersiveUI.CONFIG.isEnableHotbarSelectorAnimation()) return originalX;
 

@@ -23,7 +23,7 @@
     "${mod_id}.mixins.json"
   ],
   "depends": {
-    "minecraft": ">=1.21.9",
+    "minecraft": ">=1.21.11",
     "java": ">=21",
     "shatterlib": ">=0.6.0.5",
     "fabric-api": "*"

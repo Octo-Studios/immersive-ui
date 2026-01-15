@@ -14,6 +14,7 @@ import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.cooking.CookingLogicContainer;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.cooking.CookingUpgradeContainer;
+import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -48,7 +49,7 @@ public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
     AtomicBoolean shouldBurstCompat = new AtomicBoolean(false);
 
     @Inject(require = 0, method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/StorageScreenBase;renderStack(Lnet/minecraft/client/gui/GuiGraphics;IILnet/minecraft/world/item/ItemStack;ZLjava/lang/String;)V", shift = At.Shift.BEFORE))
-    private void renderSize(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+    private void renderSize(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, CallbackInfo ci) {
         guiGraphics.pose().pushMatrix();
         CommonCode.floatingRenderSize(guiGraphics, slot, this.hoveredSlot, backpackProgress);
 
@@ -66,7 +67,7 @@ public abstract class StorageScreenBaseMixin extends AbstractContainerScreen {
     }
 
     @Inject(require = 0, method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/p3pp3rf1y/sophisticatedcore/client/gui/ISlotDecorationRenderer;renderDecoration(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", shift = At.Shift.AFTER))
-    public void renderSizeEnd(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+    public void renderSizeEnd(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, CallbackInfo ci) {
         guiGraphics.pose().popMatrix();
     }
 }

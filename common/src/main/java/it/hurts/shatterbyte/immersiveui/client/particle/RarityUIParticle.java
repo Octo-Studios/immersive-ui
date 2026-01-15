@@ -4,11 +4,11 @@ import it.hurts.shatterbyte.immersiveui.ImmersiveUI;
 import it.hurts.shatterbyte.shatterlib.client.particle.ExtendedUIParticle;
 import it.hurts.shatterbyte.shatterlib.client.particle.UIParticle;
 import it.hurts.shatterbyte.shatterlib.util.ShatterColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Vector2f;
 
 public class RarityUIParticle extends ExtendedUIParticle {
-    public static final Texture2D TEXTURE = new Texture2D(ResourceLocation.fromNamespaceAndPath(ImmersiveUI.MOD_ID, "textures/gui/spark.png"), 8, 8);
+    public static final Texture2D TEXTURE = new Texture2D(Identifier.fromNamespaceAndPath(ImmersiveUI.MOD_ID, "textures/gui/spark.png"), 8, 8);
 
     public RarityUIParticle(float maxSpeed, int lifetime, float xStart, float yStart, float xDir, float yDir, float roll, int rarityColor,  Layer layer, float zOffset) {
         super(TEXTURE, maxSpeed, lifetime, xStart, yStart, layer, zOffset);

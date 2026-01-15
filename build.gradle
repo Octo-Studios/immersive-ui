@@ -1,5 +1,5 @@
 plugins {
-    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
     id("io.freefair.lombok") version "8.14.2" apply false
@@ -51,7 +51,7 @@ subprojects {
 
         mappings loom.layered() {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-1.21.9:2025.10.05@zip")
+            parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
         }
 
         implementation 'org.jetbrains:annotations:20.1.0'

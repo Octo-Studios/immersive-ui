@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 
 import java.util.stream.Collectors;
@@ -41,8 +41,8 @@ public class RenderUtils {
         return color;
     }
 
-    public static final ResourceLocation ALT_FONT = ResourceLocation.withDefaultNamespace("alt");
-    public static final ResourceLocation ILLAGER_ALT_FONT = ResourceLocation.withDefaultNamespace("illageralt");
+    public static final Identifier ALT_FONT = Identifier.withDefaultNamespace("alt");
+    public static final Identifier ILLAGER_ALT_FONT = Identifier.withDefaultNamespace("illageralt");
 
     public static MutableComponent illageriate(MutableComponent input, double percentage, long seed) {
         return stylize(input, percentage, Style.EMPTY.withFont(new FontDescription.Resource(ILLAGER_ALT_FONT)), seed);
