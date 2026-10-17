@@ -14,11 +14,5 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
-    @Inject(require = 0, method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.BEFORE))
-    private void beforeScreenRender(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j) {
-        Screen screen = Minecraft.getInstance().screen;
-        if (screen instanceof ExtraScreenData screenData) {
-            CommonCode.computeMouseDelta(screenData.getMouseInfo(), i, j);
-        }
-    }
+
 }

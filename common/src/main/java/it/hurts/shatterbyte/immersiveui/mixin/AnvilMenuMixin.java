@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class AnvilMenuMixin {
     @Inject(method = "onTake", at = @At("HEAD"))
     public void onTake(Player player, ItemStack stack, CallbackInfo ci) {
-        if (player != Minecraft.getInstance().player || Minecraft.getInstance().screen == null) {
+        if (player != Minecraft.getInstance().player || Minecraft.getInstance().gui.screen() == null) {
             return;
         }
 
-        VariableStorage.shakeScreen.add(Minecraft.getInstance().screen);
+        VariableStorage.shakeScreen.add(Minecraft.getInstance().gui.screen());
     }
 }

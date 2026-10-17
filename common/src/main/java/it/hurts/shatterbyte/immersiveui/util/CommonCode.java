@@ -14,7 +14,7 @@ import it.hurts.shatterbyte.shatterlib.client.particle.UIParticle;
 import it.hurts.shatterbyte.shatterlib.util.AnimationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
@@ -65,10 +65,10 @@ public class CommonCode {
         }
     }
 
-    public static void renderFloating(Screen screen, GuiGraphics guiGraphics, MouseInfo mouseInfo, int i, int j, ItemStack itemStack, Random random, RenderInfo renderInfo, String string, CallbackInfo ci) {
-        float scale = ImmersiveUI.CONFIG.getFloatingItemScale();
+    public static void renderFloating(Screen screen, GuiGraphicsExtractor guiGraphics, MouseInfo mouseInfo, int i, int j, ItemStack itemStack, Random random, RenderInfo renderInfo, String string, CallbackInfo ci) {
+        float scale = ImmersiveUI.CONFIG.inventory.floatingItemScale;
         float deltaTime = (float) ShatterLibClient.getDeltaTime()*20;
-        float amplitude = ImmersiveUI.CONFIG.getFloatingItemRotationAmplitude();
+        float amplitude = ImmersiveUI.CONFIG.inventory.floatingItemRotationAmplitude;
 
         if (mouseInfo.oX != Integer.MIN_VALUE && mouseInfo.oY != Integer.MIN_VALUE) { // Only calculate if previous values are set
             renderInfo.targetAngle = Mth.clamp(-mouseInfo.deltaX / 8f * amplitude, -Mth.HALF_PI/(2/amplitude), Mth.HALF_PI/(2/amplitude));
@@ -96,10 +96,10 @@ public class CommonCode {
         guiGraphics.pose().translate(i + 8, j + 8);
         Matrix3x2f matrix = new Matrix3x2f(guiGraphics.pose());
         guiGraphics.pose().scale(scale, scale);
-        if (ImmersiveUI.CONFIG.isEnableFloatingItemRotation()) guiGraphics.pose().rotate(Mth.abs(renderInfo.currentAngle) > 0.01f ? renderInfo.currentAngle : 0f);
-        guiGraphics.renderItem(itemStack, -8, -8);
+        if (ImmersiveUI.CONFIG.inventory.enableFloatingItemRotation) guiGraphics.pose().rotate(Mth.abs(renderInfo.currentAngle) > 0.01f ? renderInfo.currentAngle : 0f);
+        guiGraphics.item(itemStack, -8, -8);
 
-        if (ImmersiveUI.CONFIG.isEnableRarityParticles()) {
+        if (ImmersiveUI.CONFIG.inventory.enableRarityParticles) {
             List<Integer> colors = itemStack.getHoverName().getSiblings().stream().map(c -> c.getStyle().getColor() == null ? 0 : c.getStyle().getColor().getValue()).toList();
             int color = colors.isEmpty() ? 0xffffff : colors.get(random.nextInt(colors.size()));
             color = colors.isEmpty() ? itemStack.getDisplayName().getStyle().getColor() != null ? itemStack.getDisplayName().getStyle().getColor().getValue() : 0xffffff : color;
@@ -127,38 +127,38 @@ public class CommonCode {
         }
 
         Font font = Minecraft.getInstance().font;
-        guiGraphics.renderItemDecorations(font, itemStack, -8, -8, string);
+        guiGraphics.itemDecorations(font, itemStack, -8, -8, string);
         //guiGraphics.drawString(font, expandingProgress.values().toString(), 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popMatrix();
 
         ci.cancel();
     }
 
-    public static void shakeScreen(GuiGraphics guiGraphics, Screen screen, AtomicReference<Float> timer, float durationMultiplier) {
+    public static void shakeScreen(GuiGraphicsExtractor guiGraphics, Screen screen, AtomicReference<Float> timer, float durationMultiplier) {
         boolean shouldShake = shakeScreen.contains(screen);
         if (shouldShake) {
             shakeScreen.remove(screen);
-            timer.set((float) ImmersiveUI.CONFIG.getShakeTimer() * durationMultiplier);
+            timer.set((float) ImmersiveUI.CONFIG.screenShake.shakeTimer * durationMultiplier);
         }
-        if (!ImmersiveUI.CONFIG.isEnableScreenShake()) return;
+        if (!ImmersiveUI.CONFIG.screenShake.enableScreenShake) return;
 
         if (timer.get() > 0) {
             Random rand = new Random();
-            timer.set((float) Mth.clamp(timer.get()-ShatterLibClient.getDeltaTime()*20f, 0, ImmersiveUI.CONFIG.getShakeTimer()));
-            Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.getShakeAmplitude());
-            guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.getShakeTimer()));
+            timer.set((float) Mth.clamp(timer.get()-ShatterLibClient.getDeltaTime()*20f, 0, ImmersiveUI.CONFIG.screenShake.shakeTimer));
+            Vector2f shakeDirection = new Vector2f(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1)).normalize(ImmersiveUI.CONFIG.screenShake.shakeAmplitude);
+            guiGraphics.pose().translate(shakeDirection.x*(timer.get()/ImmersiveUI.CONFIG.screenShake.shakeTimer), shakeDirection.y*(timer.get()/ImmersiveUI.CONFIG.screenShake.shakeTimer));
         }
     }
 
-    public static void floatingRenderSize(GuiGraphics guiGraphics, Slot slot, Slot hoveredSlot, Map<Slot, Float> expandingProgress) {
+    public static void floatingRenderSize(GuiGraphicsExtractor guiGraphics, Slot slot, Slot hoveredSlot, Map<Slot, Float> expandingProgress) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null || slot == null)
             return;
 
         ItemStack carried = player.containerMenu.getCarried();
-        if (!carried.isEmpty() && ItemStack.isSameItemSameComponents(slot.getItem(), carried) && ImmersiveUI.CONFIG.isEnableMatchingItemHovering()) {
-            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude(), Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.getMatchingItemHoverAmplitude());
+        if (!carried.isEmpty() && ItemStack.isSameItemSameComponents(slot.getItem(), carried) && ImmersiveUI.CONFIG.inventory.enableMatchingItemHovering) {
+            guiGraphics.pose().translate(Mth.sin(Minecraft.getInstance().player.tickCount*0.215f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.inventory.matchingItemHoverAmplitude, Mth.cos(Minecraft.getInstance().player.tickCount*0.13f + Objects.hash(slot.x, slot.y))*ImmersiveUI.CONFIG.inventory.matchingItemHoverAmplitude);
         }
 
         boolean hovering = hoveredSlot == slot && (carried.isEmpty() || ItemStack.isSameItemSameComponents(slot.getItem(), carried));
@@ -167,7 +167,7 @@ public class CommonCode {
         expandingProgress.put(slot, Mth.clamp(expandingProgress.getOrDefault(slot, 0f) + deltaTime * (hovering ? 1 : -1), 0, 1f));
 
         float p = expandingProgress.get(slot);
-        float progress = AnimationUtils.lerp(1f, ImmersiveUI.CONFIG.getHoveredItemScale(), TransitionType.QUAD.apply(EaseType.EASE_OUT, p));
+        float progress = AnimationUtils.lerp(1f, ImmersiveUI.CONFIG.inventory.hoveredItemScale, TransitionType.QUAD.apply(EaseType.EASE_OUT, p));
 
         guiGraphics.pose().translate(slot.x + 8, slot.y + 8);
         guiGraphics.pose().scale(progress, progress);

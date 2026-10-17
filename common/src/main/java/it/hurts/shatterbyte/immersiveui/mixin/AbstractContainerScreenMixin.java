@@ -5,7 +5,7 @@ import it.hurts.shatterbyte.immersiveui.client.MouseInfo;
 import it.hurts.shatterbyte.immersiveui.client.RenderInfo;
 import it.hurts.shatterbyte.immersiveui.compat.ExtraScreenData;
 import it.hurts.shatterbyte.immersiveui.util.CommonCode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
@@ -36,9 +36,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
     private MouseInfo mouseInfo = new MouseInfo();
     @Unique
     private RenderInfo renderInfo = new RenderInfo();
-
-    @Unique
-    AtomicReference<Float> timerCommon = new AtomicReference<>(0f);
 
     @Override
     public MouseInfo getMouseInfo() {
@@ -76,15 +73,6 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
         return expandingProgress;
     }
 
-    @Inject(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", shift = At.Shift.BEFORE))
-    public void renderBg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        if (ImmersiveUI.SOPHISTICATED_COMPAT.isStorageScreenBase((Screen) (Object) this)) {
-            return;
-        }
-
-        CommonCode.shakeScreen(guiGraphics, (Screen) (Object) this, timerCommon, 1f);
-    }
-
 //    @Inject(method = "render", at = @At("TAIL"))
 //    public void renderParticles(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
 //        guiGraphics.pose().pushPose();
@@ -93,18 +81,18 @@ public abstract class AbstractContainerScreenMixin implements ExtraScreenData {
 //        guiGraphics.pose().popPose();
 //    }
 
-    @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
-    public void renderFunkyItem(GuiGraphics guiGraphics, ItemStack itemStack, int i, int j, String string, CallbackInfo ci) {
+    @Inject(method = "extractFloatingItem", at = @At("HEAD"), cancellable = true)
+    public void renderFunkyItem(GuiGraphicsExtractor graphics, ItemStack carried, int x, int y, String itemCount, CallbackInfo ci) {
 //        if (ImmersiveUI.SOPHISTICATED_COMPAT.isStorageScreenBase((Screen) (Object) this)) {
 //            return;
 //        }
 
-        CommonCode.renderFloating((Screen) (Object) this, guiGraphics, getMouseInfo(), i, j, itemStack, getRandom(), getRenderInfo(), string, ci);
+        CommonCode.renderFloating((Screen) (Object) this, graphics, getMouseInfo(), x, y, carried, getRandom(), getRenderInfo(), itemCount, ci);
     }
 
-    @Inject(method = "renderSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
-    private void disableSlotHighlight(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (ImmersiveUI.CONFIG.isDisableVanillaSlotHighlighting()) {
+    @Inject(method = "extractSlotHighlightFront", at = @At(value = "HEAD"), cancellable = true)
+    private void disableSlotHighlight(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        if (ImmersiveUI.CONFIG.inventory.disableVanillaSlotHighlighting) {
             ci.cancel();
         }
     }

@@ -1,14 +1,14 @@
 modLoader = "javafml"
-loaderVersion = "[4,)"
-issueTrackerURL = "${mod_tracker}"
-license = "${mod_license}"
+loaderVersion = "${neoforge_loader_version_range}"
+issueTrackerURL = "https://github.com/Octo-Studios/immersive-ui/issues"
+license = "${license}"
 
 [[mods]]
 modId = "${mod_id}"
-version = "${mod_version}"
+version = "${version}"
 displayName = "${mod_name}"
-authors = "${mod_authors}"
-description = "${mod_description}"
+authors = "${mod_author}"
+description = "${description}"
 logoFile = "logo.png"
 
 [[mixins]]
@@ -19,20 +19,20 @@ config = "${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.11,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.${mod_id}]]
 modId = "shatterlib"
 type = "required"
-versionRange = "[0.6.0.5,)"
+versionRange = "[0.7.0-beta.1+26.2,)"
 ordering = "NONE"
 side = "CLIENT"

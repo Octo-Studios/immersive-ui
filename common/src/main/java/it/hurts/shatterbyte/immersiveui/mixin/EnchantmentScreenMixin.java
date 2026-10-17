@@ -21,7 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EnchantmentScreenMixin {
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleInventoryButtonClick(II)V"))
     public void onMouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
-        if (!ImmersiveUI.CONFIG.isEnableEnchantParticles()) return;
+        if (!ImmersiveUI.CONFIG.enchantments.enableEnchantParticles) {
+            return;
+        }
 
         AbstractContainerScreen<EnchantmentMenu> screen = ((AbstractContainerScreen<EnchantmentMenu>) (Object) this);
         Slot slot = screen.getMenu().slots.getFirst();
