@@ -41,6 +41,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation("it.hurts.shatterbyte.shatterlib:shatterlib-neoforge:${shatterlib_version}")
+    implementation "maven.modrinth:nmoqTijg:ZHFXqxoj"
+    implementation "maven.modrinth:TyCTlI4b:c2sypDK1"
 }
 
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)

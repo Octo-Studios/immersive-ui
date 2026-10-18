@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_${java_version}",
   "minVersion": "0.8",
   "client": [
-    "FloatingItemMixin"
+    "FloatingItemMixin",
+    "StorageScreenBaseMixin"
   ],
   "mixins": [
   ],
