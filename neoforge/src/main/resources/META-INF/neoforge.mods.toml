@@ -34,6 +34,6 @@ side = "CLIENT"
 [[dependencies.${mod_id}]]
 modId = "shatterlib"
 type = "required"
-versionRange = "[0.7.0-beta.1+26.2,)"
+versionRange = "[0.7.0-beta.4+26.3,)"
 ordering = "NONE"
 side = "CLIENT"
